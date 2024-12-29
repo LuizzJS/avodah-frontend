@@ -10,7 +10,12 @@ const api = axios.create({
 export const login = async (username, password) => {
   try {
     const response = await api.post("/login", { username, password });
-    return response.data || null;
+    if (response.data.success && response.data.token) {
+      localStorage.setItem("token", response.data.token);
+      return response.data;
+    }
+
+    return { success: false, message: "Login failed." };
   } catch (error) {
     console.error("Login error:", error);
     return { success: false, message: "Login failed." };
