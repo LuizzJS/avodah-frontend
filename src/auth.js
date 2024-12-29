@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import axios from "axios";
 dotenv.config();
-export const API_URL = process.env.API_URL || "http://localhost:5000/api/auth";
+export const API_URL = process.env.API_URI || "http://localhost:5000/api/auth";
 
 const api = axios.create({
   baseURL: API_URL,
