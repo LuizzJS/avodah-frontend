@@ -3,18 +3,26 @@ import { generateVerse } from "../auth";
 
 const DayVerse = () => {
   const [verseData, setVerseData] = useState({
-    reference: null,
-    text: null,
+    reference: "",
+    text: "",
   });
 
   const fetchVerse = async () => {
     try {
       const response = await generateVerse();
-      const verse = response.data;
 
-      setVerseData(verse);
-      localStorage.setItem("verseData", JSON.stringify(verse));
-      localStorage.setItem("lastFetched", new Date().toString());
+      const verse =
+        response === null
+          ? { text: "Não disponível", reference: "Não disponível" }
+          : response;
+
+      if (verse && verse.reference && verse.text) {
+        setVerseData(verse);
+        localStorage.setItem("verseData", JSON.stringify(verse));
+        localStorage.setItem("lastFetched", new Date().toISOString());
+      } else {
+        throw new Error("Invalid verse data received");
+      }
     } catch (error) {
       console.error("Error fetching verse:", error);
     }
@@ -25,7 +33,11 @@ const DayVerse = () => {
     const lastFetched = new Date(localStorage.getItem("lastFetched"));
     const verseDataStored = JSON.parse(localStorage.getItem("verseData"));
 
-    if (now.getDate() !== lastFetched.getDate() || !verseDataStored) {
+    if (
+      !lastFetched ||
+      now.toDateString() !== lastFetched.toDateString() ||
+      !verseDataStored
+    ) {
       fetchVerse();
     } else {
       setVerseData(verseDataStored);
@@ -33,11 +45,11 @@ const DayVerse = () => {
   };
 
   const formatText = (text) => {
-    return String(text).trim();
+    return text ? String(text).trim() : "Não disponível";
   };
 
   useEffect(() => {
-    checkForNewDay();
+    fetchVerse();
 
     const interval = setInterval(() => {
       checkForNewDay();

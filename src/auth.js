@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const API_URL = "https://backend-taupe-ten.vercel.app/api/auth";
+export const API_URL = "https://backend-pjg0.onrender.com/api/auth";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -25,6 +25,7 @@ export const login = async (username, password) => {
 export const logout = async () => {
   try {
     const response = await api.post("/logout");
+    localStorage.removeItem("token");
     return response.status === 200 ? { success: true } : { success: false };
   } catch (error) {
     console.error("Logout error:", error);
@@ -53,6 +54,7 @@ export const register = async (username, email, password) => {
 export const checkIfLoggedIn = async () => {
   try {
     const { data } = await api.get("/isLogged");
+    if (!localStorage.getItem("token") && !data.success) return { ok: false };
     return data.success ? { ok: true, user: data.data } : { ok: false };
   } catch (error) {
     console.error("Error checking login status:", error);
@@ -62,13 +64,11 @@ export const checkIfLoggedIn = async () => {
 
 export const generateVerse = async () => {
   try {
-    const response = await axios.get(
-      "https://bible-api.com/?random=verse&translation=almeida",
-      { withCredentials: true } // Set to true if you need to send cookies
-    );
-    return response.data; // Return the actual verse data
+    const response = await api.get("/generateVerse");
+
+    return response === null ? null : response.data.data;
   } catch (error) {
-    console.error("Error generating verse:", error);
-    return { success: false, message: "Failed to generate verse." };
+    console.log(error);
+    throw error;
   }
 };

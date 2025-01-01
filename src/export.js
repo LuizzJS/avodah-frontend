@@ -14,6 +14,7 @@ import ErrorReport from "./pages/ErrorReport.jsx";
 import Forum from "./pages/Forum.jsx";
 import PolicyPrivacy from "./pages/PolicyPrivacy.jsx";
 import ToS from "./pages/ToS.jsx";
+import NetworkProtection from "./components/NetworkProtection.jsx";
 export {
   Footer,
   Header,
@@ -31,4 +32,5 @@ export {
   Forum,
   PolicyPrivacy,
   ToS,
+  NetworkProtection,
 };
