@@ -11,6 +11,7 @@ const api = axios.create({
 export const login = async (username, password) => {
   try {
     const response = await api.post("/login", { username, password });
+    console.log(response);
     if (response.data.success) {
       return response.data;
     }
@@ -25,6 +26,7 @@ export const login = async (username, password) => {
 export const logout = async () => {
   try {
     const response = await api.post("/logout");
+    console.log(response);
     return response.status === 200 ? { success: true } : { success: false };
   } catch (error) {
     console.error("Logout error:", error);
@@ -38,6 +40,7 @@ export const register = async (username, email, password) => {
       return { success: false, message: "Preencha todos os campos." };
     }
     const response = await api.post("/register", { username, email, password });
+    console.log(response);
     return response.status === 201
       ? response.data
       : {
@@ -53,6 +56,7 @@ export const register = async (username, email, password) => {
 export const checkIfLoggedIn = async () => {
   try {
     const { data } = await api.get("/isLogged");
+    console.log(data);
     return data.success ? { ok: true, user: data.data } : { ok: false };
   } catch (error) {
     console.error("Error checking login status:", error);
@@ -63,6 +67,7 @@ export const checkIfLoggedIn = async () => {
 export const generateVerse = async () => {
   try {
     const response = await api.get("/generateVerse");
+    console.log(response);
     return response ? response.data.data : null;
   } catch (error) {
     console.log(error);
