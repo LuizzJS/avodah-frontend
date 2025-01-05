@@ -1,9 +1,6 @@
 import * as Components from "./export.js";
-import { Home } from "lucide-react";
-import NotFoundImage from "./assets/not_found.svg";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import Button from "./components/Button.jsx";
 const App = () => {
   return (
     <BrowserRouter>
