@@ -5,6 +5,7 @@ export const API_URL = "https://backend-pjg0.onrender.com/api/auth";
 const api = axios.create({
   baseURL: API_URL,
   withCredentials: true,
+  headers: ["Authorization"],
 });
 
 export const login = async (username, password) => {
