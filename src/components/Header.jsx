@@ -5,6 +5,7 @@ import Link from "./Link";
 import { User2, Menu, X } from "lucide-react";
 import AvodahLogo from "/avodah-transparent.png";
 import { checkIfLoggedIn } from "../auth";
+import axios from "axios";
 axios.defaults.withCredentials = true;
 
 const Header = () => {
@@ -41,7 +42,7 @@ const Header = () => {
     : "Entre ou cadastre-se";
 
   return (
-    <header className="overflow-hidden">
+    <header className="">
       <div className="flex justify-between items-center h-[15vh] w-full max-md:hidden p-3">
         <a href="/">
           <img src={AvodahLogo} alt="Ministério Avodah" className="h-60" />
