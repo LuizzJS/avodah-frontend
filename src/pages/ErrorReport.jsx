@@ -20,21 +20,25 @@ const ErrorReport = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!name || !email || !description) {
       toast.error("Por favor, preencha todos os campos antes de enviar!");
       return;
     }
+
     if (!MailValidator.validate(email)) {
       toast.error("Por favor, insira um email válido!");
       return;
     }
 
-    const formData = { name, email, description };
     setIsSubmitting(true);
     toast.success(
       "Obrigado por reportar o erro. Entraremos em contato em breve!"
     );
+
+    const formData = { name, email, description };
     await handleEmailSend(formData);
+
     setName("");
     setEmail("");
     setDescription("");
@@ -43,13 +47,14 @@ const ErrorReport = () => {
 
   const handleEmailSend = async (formData) => {
     try {
-      const response = await fetch(API_URL + "/send-report", {
+      const response = await fetch(`${API_URL}/send-report`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      const data = await response.json();
+
       if (response.ok) {
+        const data = await response.json();
         console.log("Email sent successfully:", data);
       } else {
         toast.error("Ocorreu um erro ao enviar o relatório.");
@@ -69,6 +74,7 @@ const ErrorReport = () => {
           <h1 className="text-3xl font-bold font-oswald text-center text-gray-800 mb-4">
             REPORTAR ERRO
           </h1>
+
           <Input
             name="name"
             id="name"
@@ -77,6 +83,7 @@ const ErrorReport = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
+
           <Input
             name="email"
             id="email"
@@ -85,14 +92,16 @@ const ErrorReport = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
+
           <Input
-            name="email"
-            id="email"
+            name="description"
+            id="description"
             placeholder="Descrição do erro"
             icon={MessageSquareText}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
+
           <Button
             type="submit"
             label={isSubmitting ? "Enviando..." : "Reportar Erro"}

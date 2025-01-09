@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 const NotFound = () => {
   const navigate = useNavigate();
+
   const handleClick = () => navigate("/");
 
   return (
-    <section className="h-[100%] w-[100%] flex flex-col items-center justify-center px-8 bg-gray-100">
-      <div className="max-w-4xl w-full text-center flex flex-col items-center md:flex-row justify-between">
-        <div className="flex flex-col items-center mb-8 text-center">
+    <section className="h-screen w-full flex flex-col items-center justify-center px-8 bg-gray-100">
+      <div className="max-w-4xl w-full text-center flex flex-col md:flex-row items-center justify-between">
+        <div className="flex flex-col items-center mb-8 md:mb-0 text-center">
           <h1 className="text-5xl font-semibold text-blue-700 mb-4">
             Página desconhecida
           </h1>
@@ -18,7 +19,7 @@ const NotFound = () => {
           </p>
           <button
             onClick={handleClick}
-            className="px-6 py-3 text-sm bg-blue-700 text-white rounded-xl shadow-md transition-all duration-300 hover:scale-105 ">
+            className="px-6 py-3 text-sm bg-blue-700 text-white rounded-xl shadow-md transition-all duration-300 hover:scale-105 focus:outline-none">
             Voltar à Página Inicial
           </button>
         </div>

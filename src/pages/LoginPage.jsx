@@ -40,7 +40,7 @@ const LoginPage = () => {
   return (
     <section className="h-full w-full flex justify-center items-center">
       <div className="w-80 h-96 bg-transparent rounded-xl shadow-md flex justify-center items-center flex-col gap-4 px-4">
-        <h1 className="text-5xl font-oswald font-bold">LOGIN</h1>
+        <h1 className="text-5xl font-oswald font-bold text-center">LOGIN</h1>
         <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
           <Input
             icon={User2}
@@ -48,6 +48,7 @@ const LoginPage = () => {
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Nome"
             type="text"
+            required
           />
           <Input
             icon={Lock}
@@ -55,16 +56,14 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Senha"
             type="password"
+            required
           />
           {errorMessage && (
             <p className="text-sm text-red-600">{errorMessage}</p>
           )}
-          <Button type="submit" label={"Login"} icon={<LogIn />} />
+          <Button type="submit" label="Login" icon={<LogIn />} />
         </form>
-        <Link
-          href={"/register"}
-          label={"Ainda não tem uma conta? Registre-se"}
-        />
+        <Link href="/register" label="Ainda não tem uma conta? Registre-se" />
       </div>
     </section>
   );

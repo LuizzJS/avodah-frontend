@@ -6,8 +6,11 @@ const SearchBar = () => {
   const [results, setResults] = useState([]);
   const resultsRef = useRef(null);
 
-  const findSimilar = async () => {
-    if (!search) return;
+  const findSimilar = () => {
+    if (!search) {
+      setResults([]);
+      return;
+    }
     const simulatedResults = [
       "Dias de culto",
       "Horas de culto",
@@ -23,10 +26,12 @@ const SearchBar = () => {
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
-    if (!value.trim()) return clearSearch();
     setSearch(value);
-    findSimilar();
   };
+
+  useEffect(() => {
+    findSimilar();
+  }, [search]);
 
   const clearSearch = () => {
     setSearch("");
@@ -81,13 +86,17 @@ const SearchBar = () => {
           className="absolute w-full mt-2 rounded-xl bg-slate-50 shadow-md max-h-40 overflow-y-auto z-40 p-1"
           style={{ top: "100%" }}>
           <ul className="space-y-2">
-            <li className="text-sm text-blue-600 hover:text-blue-800 cursor-pointer">
-              <a
-                href={`/search/${results[0].toLowerCase().replace(/ /g, "-")}`}
-                className="block">
-                {results[0]}
-              </a>
-            </li>
+            {results.map((result) => (
+              <li
+                key={result}
+                className="text-sm text-blue-600 hover:text-blue-800 cursor-pointer">
+                <a
+                  href={`/search/${result.toLowerCase().replace(/ /g, "-")}`}
+                  className="block">
+                  {result}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
       )}

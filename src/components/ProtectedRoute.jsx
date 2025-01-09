@@ -8,8 +8,12 @@ const ProtectedRoute = ({ children }) => {
 
   useEffect(() => {
     const verifyAuthentication = async () => {
-      const response = await checkIfLoggedIn();
-      setIsAuthenticated(response.ok);
+      try {
+        const response = await checkIfLoggedIn();
+        setIsAuthenticated(response.ok);
+      } catch (error) {
+        setIsAuthenticated(false);
+      }
     };
 
     verifyAuthentication();

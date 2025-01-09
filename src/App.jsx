@@ -1,15 +1,25 @@
 import * as Components from "./export.js";
-import { Route, Routes, BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+
 const App = () => {
   return (
     <BrowserRouter>
       <div className="h-screen w-screen flex flex-col">
         <Components.Header />
+
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Components.Home />} />
-            <Route path="/profile" element={<Components.Profile />} />
+            <Route path="/login" element={<Components.LoginPage />} />
+            <Route path="/register" element={<Components.RegisterPage />} />
+            <Route
+              path="/policy-privacy"
+              element={<Components.PolicyPrivacy />}
+            />
+            <Route path="/tos" element={<Components.ToS />} />
+            <Route path="/error-report" element={<Components.ErrorReport />} />
+
             <Route
               path="/versiculo"
               element={
@@ -18,9 +28,6 @@ const App = () => {
                 </Components.NetworkProtection>
               }
             />
-            <Route path="/login" element={<Components.LoginPage />} />
-            <Route path="/register" element={<Components.RegisterPage />} />
-            <Route path="/error-report" element={<Components.ErrorReport />} />
             <Route
               path="/forum"
               element={
@@ -29,16 +36,16 @@ const App = () => {
                 </Components.ProtectedRoute>
               }
             />
-            <Route
-              path="/policy-privacy"
-              element={<Components.PolicyPrivacy />}
-            />
-            <Route path="/tos" element={<Components.ToS />} />
+
+            <Route path="/profile" element={<Components.Profile />} />
+
             <Route path="*" element={<Components.NotFound />} />
           </Routes>
         </main>
+
         <Components.Footer />
       </div>
+
       <Toaster />
     </BrowserRouter>
   );

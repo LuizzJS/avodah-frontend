@@ -1,7 +1,7 @@
-import { Navigate } from "react-router-dom";
-import Button from "./Button.jsx";
 import { Home } from "lucide-react";
+import Button from "./Button.jsx";
 import NotFoundImage from "../assets/not_found.svg";
+
 const NetworkProtection = ({ children }) => {
   if (!navigator.onLine) {
     const handleClick = () => (window.location.href = "/");
@@ -20,7 +20,6 @@ const NetworkProtection = ({ children }) => {
             <Button
               label="Voltar à página inicial"
               click={handleClick}
-              key="homePage"
               icon={<Home />}
             />
           </div>

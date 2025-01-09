@@ -21,7 +21,7 @@ const Profile = () => {
         const userId = new URLSearchParams(location.search).get("id");
 
         if (userId) {
-          const response = await axios.get(API_URL + `/getUser?id=${userId}`);
+          const response = await axios.get(`${API_URL}/getUser?id=${userId}`);
           if (response.data.ok && response.data.user) {
             setUser(response.data.user);
             setIsAltUser(response.data.user._id !== loggedInUser.user._id);
@@ -78,7 +78,7 @@ const Profile = () => {
       hour: "2-digit",
       minute: "2-digit",
       timeZone: "UTC",
-    });
+    }) || "Data inválida";
 
   const userInfo = [
     { icon: <User />, label: "Nome", value: user.username },

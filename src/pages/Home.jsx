@@ -1,8 +1,6 @@
 import { ChevronRight, ChevronLeft } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Evento, Image1, Image2, Image3 } from "../slider_images/export.images";
-import { useNavigate } from "react-router-dom";
-import { checkIfLoggedIn, login } from "../auth";
 
 const Home = () => {
   const [image, setImage] = useState("");
@@ -58,7 +56,7 @@ const Home = () => {
             src={slider_images[currentIndex]}
             alt={`Imagem ${currentIndex + 1}`}
             className="cursor-pointer rounded-md object-contain min-h-full min-w-full"
-            onClick={(e) => handleImageClick(e)}
+            onClick={handleImageClick}
           />
           <button
             onClick={handleNext}
@@ -67,20 +65,22 @@ const Home = () => {
           </button>
         </div>
         <div className="flex flex-col gap-4">
-          <div className="w-[200px] h-[200px] max-sm:w-[100px] max-sm:h-[100px] bg-white shadow-md rounded-xl flex justify-center items-center overflow-hidden cursor-pointer">
+          <div
+            className="w-[200px] h-[200px] max-sm:w-[100px] max-sm:h-[100px] bg-white shadow-md rounded-xl flex justify-center items-center overflow-hidden cursor-pointer"
+            onClick={handleImageClick}>
             <img
               src={Evento}
-              alt={`Thumbnail 2`}
+              alt="Thumbnail 1"
               className="rounded-md object-contain min-h-full min-w-full"
-              onClick={(e) => handleImageClick(e)}
             />
           </div>
-          <div className="w-[200px] h-[200px] max-sm:w-[100px] max-sm:h-[100px] bg-white shadow-md rounded-xl flex justify-center items-center overflow-hidden cursor-pointer">
+          <div
+            className="w-[200px] h-[200px] max-sm:w-[100px] max-sm:h-[100px] bg-white shadow-md rounded-xl flex justify-center items-center overflow-hidden cursor-pointer"
+            onClick={handleImageClick}>
             <img
               src={Image2}
-              alt={`Thumbnail 1`}
+              alt="Thumbnail 2"
               className="rounded-md object-contain min-h-full min-w-full"
-              onClick={(e) => handleImageClick(e)}
             />
           </div>
         </div>

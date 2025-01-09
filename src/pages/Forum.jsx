@@ -16,7 +16,7 @@ const Forum = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(API_URL + "/posts");
+        const response = await fetch(`${API_URL}/posts`);
         if (!response.ok) throw new Error("Failed to fetch posts");
         setPosts(await response.json());
       } catch (err) {
@@ -37,31 +37,39 @@ const Forum = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!title || !content) {
       setFormError("Both title and content are required.");
       return;
     }
+
     setFormError("");
     if (!user) return;
-    const response = await fetch(API_URL + "/posts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title,
-        content,
-        author: user.username,
-        authorId: user._id,
-      }),
-    });
-    if (response.ok) {
-      const newPost = await response.json();
-      setPosts([...posts, newPost]);
-      toast.success("Post created successfully!");
-      setTitle("");
-      setContent("");
-    } else {
-      const errorData = await response.json();
-      setFormError(errorData.message);
+
+    try {
+      const response = await fetch(`${API_URL}/posts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          content,
+          author: user.username,
+          authorId: user._id,
+        }),
+      });
+
+      if (response.ok) {
+        const newPost = await response.json();
+        setPosts((prevPosts) => [...prevPosts, newPost]);
+        toast.success("Post created successfully!");
+        setTitle("");
+        setContent("");
+      } else {
+        const errorData = await response.json();
+        setFormError(errorData.message);
+      }
+    } catch (error) {
+      toast.error("Error creating post.");
     }
   };
 
@@ -70,20 +78,28 @@ const Forum = () => {
       toast.error("You can only delete your own posts.");
       return;
     }
+
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this post?"
     );
     if (!confirmDelete) return;
-    const response = await fetch(API_URL + `/posts/remove/${postId}`, {
-      method: "POST",
-    });
-    if (response.ok) {
-      setPosts(posts.filter((post) => post.postId !== postId));
-      toast.success("Post deleted successfully!");
-      window.location.reload();
-    } else {
-      const errorData = await response.json();
-      toast.error("Failed to delete post: " + errorData.message);
+
+    try {
+      const response = await fetch(`${API_URL}/posts/remove/${postId}`, {
+        method: "POST",
+      });
+
+      if (response.ok) {
+        setPosts((prevPosts) =>
+          prevPosts.filter((post) => post._id !== postId)
+        );
+        toast.success("Post deleted successfully!");
+      } else {
+        const errorData = await response.json();
+        toast.error("Failed to delete post: " + errorData.message);
+      }
+    } catch (error) {
+      toast.error("Error deleting post.");
     }
   };
 
@@ -103,6 +119,7 @@ const Forum = () => {
         Loading...
       </div>
     );
+
   if (error)
     return (
       <div className="flex items-center justify-center min-h-screen text-red-500">
@@ -115,21 +132,23 @@ const Forum = () => {
       <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">
         Forum
       </h1>
+
       <div className="bg-white shadow-xl rounded-lg p-6 mb-8">
         <h2 className="text-2xl font-semibold mb-4">Create a New Post</h2>
         {formError && <div className="text-red-500 mb-4">{formError}</div>}
+
         <form onSubmit={handleSubmit} className="space-y-3">
           <Input
             type="text"
             placeholder="Title"
-            onChange={(e) => setTitle(e.target.value)}
             value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
           <Input
             type="text"
             placeholder="Content"
-            onChange={(e) => setContent(e.target.value)}
             value={content}
+            onChange={(e) => setContent(e.target.value)}
           />
           <Button label="Create Post" type="submit" />
         </form>
@@ -157,7 +176,7 @@ const Forum = () => {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDelete(post.postId, post.authorId);
+                      handleDelete(post._id, post.authorId);
                     }}
                     className="text-red-500 text-sm">
                     Delete

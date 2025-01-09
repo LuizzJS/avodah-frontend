@@ -2,7 +2,7 @@ const Link = ({ href, label }) => {
   return (
     <a
       href={href}
-      className="text-gray-700 hover:text-base text-sm hover:text-blue-500 transition-all duration-300 break-words text-center mb-2">
+      className="text-sm text-gray-700 hover:text-blue-500 hover:text-base transition-all duration-300 mb-2">
       {label}
     </a>
   );
