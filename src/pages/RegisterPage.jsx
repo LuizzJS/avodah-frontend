@@ -21,13 +21,14 @@ const RegisterPage = () => {
     setIsLoading(true);
 
     try {
-      // Validate email
       const isValidEmail = EmailValidator.validate(email);
       if (!isValidEmail) {
         throw new Error("Email inválido.");
       }
+      if (!username || !email || !password) {
+        throw new Error("Preencha todos os campos.");
+      }
 
-      // Check password strength
       const passwordStrengthResult = passwordStrength(password);
       if (passwordStrengthResult.id < 1) {
         throw new Error(
@@ -35,12 +36,11 @@ const RegisterPage = () => {
         );
       }
 
-      // Register user
       const registerResponse = await register(username, email, password);
-      if (registerResponse.ok) {
+      console.log(registerResponse);
+      if (registerResponse.success) {
         toast.success("Cadastro realizado com sucesso, realizando login...");
         setTimeout(async () => {
-          // Log in after registration
           const loginResponse = await login(username, password);
           if (loginResponse.success) {
             toast.success("Logado com sucesso.");
@@ -93,7 +93,7 @@ const RegisterPage = () => {
           click={handleSubmit}
           label={isLoading ? "Cadastrando..." : "Realizar o cadastro"}
           icon={<Church />}
-          disabled={isLoading} // Disable button while loading
+          disabled={isLoading}
         />
         <Link href="/login" label="Já possui uma conta? Realize o login" />
       </div>
