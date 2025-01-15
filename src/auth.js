@@ -67,8 +67,19 @@ export const checkIfLoggedIn = async () => {
 export const generateVerse = async () => {
   try {
     const response = await api.get("/generateVerse");
-
-    return response ? response.data.data : null;
+    const books = await axios.get("https://bolls.life/get-books/NVIPT/", {
+      withCredentials: true,
+    });
+    const book = books[response.book - 1];
+    return response
+      ? {
+          text: response.text,
+          chapter: response.chapter,
+          book: response.book,
+          verse: response.verse,
+          reference: `${book} ${response.chapter}:${response.verse}`,
+        }
+      : null;
   } catch (error) {
     console.log(error);
     throw error;

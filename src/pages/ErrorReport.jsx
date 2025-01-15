@@ -105,9 +105,6 @@ const ErrorReport = () => {
           <Button
             type="submit"
             label={isSubmitting ? "Enviando..." : "Reportar Erro"}
-            className={`w-full py-2 px-4 rounded-lg font-medium ${
-              isSubmitting ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
-            } text-white`}
             icon={
               isSubmitting ? (
                 <Loader className="animate-spin" />
