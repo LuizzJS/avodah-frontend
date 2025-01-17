@@ -66,16 +66,18 @@ export const checkIfLoggedIn = async () => {
 
 export const generateVerse = async () => {
   try {
+    const books = await fetch("https://bolls.life/get-books/ARA/");
     const response = await api.get("/generateVerse");
     const data = response.data.data;
-    console.log("Hello");
+    const book = books.find((b) => b.id === data.book);
+
     return data
       ? {
           text: data.text,
           chapter: data.chapter,
           book: data.book,
           verse: data.verse,
-          reference: `${data.book} ${data.chapter}:${data.verse}`,
+          reference: `${book} ${data.chapter}:${data.verse}`,
         }
       : null;
   } catch (error) {
