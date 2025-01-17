@@ -10,6 +10,7 @@ const DayVerse = () => {
   const fetchVerse = async () => {
     try {
       const response = await generateVerse();
+      console.log(response);
       const verse = response || {
         text: "Não disponível",
         reference: "Não disponível",

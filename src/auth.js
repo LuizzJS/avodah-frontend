@@ -70,6 +70,7 @@ export const generateVerse = async () => {
     const books = await axios.get("https://bolls.life/get-books/NVIPT/", {
       withCredentials: true,
     });
+    console.log(response, books);
     const book = books[response.book - 1];
     return response
       ? {
