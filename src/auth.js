@@ -66,10 +66,18 @@ export const checkIfLoggedIn = async () => {
 
 export const generateVerse = async () => {
   try {
-    const books = await fetch("https://bolls.life/get-books/ARA/");
+    const booksResponse = await fetch("https://bolls.life/get-books/ARA/");
+    const books = await booksResponse.json();
     const response = await api.get("/generateVerse");
     const data = response.data.data;
+
     const book = books.find((b) => b.id === data.book);
+
+    if (book) {
+      console.log(book, data);
+    } else {
+      console.log("Book not found", data);
+    }
 
     return data
       ? {

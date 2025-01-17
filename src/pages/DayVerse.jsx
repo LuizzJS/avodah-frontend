@@ -35,6 +35,7 @@ const DayVerse = () => {
 
     if (
       !lastFetched ||
+      isNaN(lastFetched.getTime()) ||
       now.toDateString() !== lastFetched.toDateString() ||
       !storedVerse
     ) {
