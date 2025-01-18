@@ -40,6 +40,7 @@ const RegisterPage = () => {
       console.log(registerResponse);
       if (registerResponse.success) {
         toast.success("Cadastro realizado com sucesso, realizando login...");
+
         setTimeout(async () => {
           const loginResponse = await login(username, password);
           if (loginResponse.success) {

@@ -90,11 +90,12 @@ const Home = () => {
           SOBRE A AVODAH
         </h1>
         <p className="text-sm text-gray-200 mt-2 break-words font-semibold">
-          Lorem ipsum dolor sit amet, consectetur adipisicing <br />
-          elit. Optio, fugiat rem hic aliquam perspiciatis voluptatibus <br />
-          molestias cupiditate sint ea deleniti distinctio quasi repellendus!{" "}
+          Somos a Assembleia de Deus Ministério Avodah, uma <br />
+          igreja que vive para glorificar a Deus por meio da adoração, da <br />
+          proclamação da Palavra e do serviço ao próximo. Aqui, você encontrará
           <br />
-          Nobis adipisci dolorum, qui debitis magnam temporibus. <br />
+          um ambiente acolhedor para fortalecer sua fé e crescer <br />
+          espiritualmente. Seja bem-vindo à nossa família!
         </p>
       </div>
     </section>

@@ -1,56 +1,39 @@
 import { useState, useEffect } from "react";
-import { checkIfLoggedIn, logout, API_URL } from "../auth";
-import { useNavigate, useLocation } from "react-router-dom";
+import { checkIfLoggedIn, logout } from "../auth";
+import { useNavigate } from "react-router-dom";
 import {
   User,
   Mail,
   Clock,
   Briefcase,
   IdCard,
-  ArrowBigLeftDash,
   CornerUpLeft,
 } from "lucide-react";
 import toast from "react-hot-toast";
-import axios from "axios";
 import Button from "../components/Button";
 import DefaultPicture from "../assets/default_user.jpg";
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
+  const [member, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [isAltUser, setIsAltUser] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const { ok, user } = await checkIfLoggedIn();
-        const userId = new URLSearchParams(location.search).get("id");
-
-        if (userId) {
-          const { data } = await axios.get(`${API_URL}/getUser?id=${userId}`);
-          if (data.ok && data.user) {
-            setUser(data.user);
-            setIsAltUser(data.user._id !== user._id);
-          } else {
-            navigate("/login");
-          }
+        if (ok && user) {
+          setUser(user);
         } else {
-          if (ok && user) {
-            setUser(user);
-            setIsAltUser(false);
-          } else {
-            navigate("/login");
-          }
+          navigate("/login");
         }
       } catch {
         navigate("/login");
       }
     };
     fetchUser();
-  }, [location.search, navigate]);
+  }, [navigate]);
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -59,7 +42,10 @@ const Profile = () => {
       const { success } = await logout();
       if (success) {
         toast.success("Conta deslogada com sucesso.");
-        setTimeout(() => navigate("/"), 2000);
+        setTimeout(() => {
+          navigate("/");
+          window.location.reload();
+        }, 2000);
       } else {
         throw new Error("Falha ao deslogar.");
       }
@@ -71,8 +57,8 @@ const Profile = () => {
     }
   };
 
-  if (!user) {
-    navigate("/login");
+  if (!member) {
+    return null;
   }
 
   const formatDate = (date) =>
@@ -85,26 +71,27 @@ const Profile = () => {
       timeZone: "UTC",
     }) || "Data inválida";
   const username =
-    user.username[0].toUpperCase() + user.username.slice(1) || "N/A";
+    member.username[0].toUpperCase() + member.username.slice(1) || "N/A";
   const userInfo = [
-    { icon: <User />, label: "Nome", value: user.username },
-    { icon: <Mail />, label: "Email", value: user.email || "N/A" },
+    { icon: <User />, label: "Nome", value: member.username },
+    { icon: <Mail />, label: "Email", value: member.email || "N/A" },
     {
       icon: <Clock />,
       label: "Conta criada em",
-      value: formatDate(user.createdAt),
+      value: formatDate(member.createdAt),
     },
     {
       icon: <Briefcase />,
       label: "Cargo",
-      value: `${
-        user.role.charAt(0).toUpperCase() + user.role.slice(1)
-      } (posição ${user.rolePosition})`,
+      value: `
+        ${
+          member.role.charAt(0).toUpperCase() + member.role.slice(1)
+        } (posição ${member.rolePosition})`,
     },
     {
       icon: <IdCard />,
       label: "Número de identificação",
-      value: user._id.slice(0, 9) + "*".repeat(user._id.slice(9).length),
+      value: member._id.slice(0, 9) + "*".repeat(member._id.slice(9).length),
     },
   ];
 
@@ -119,7 +106,7 @@ const Profile = () => {
           </div>
           <div>
             <h1 className="text-2xl font-bold mt-4">{username}</h1>
-            <p className="text-sm text-gray-500 ">{user.email}</p>
+            <p className="text-sm text-gray-500 ">{member.email}</p>
           </div>
         </div>
         {error && error}

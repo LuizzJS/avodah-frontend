@@ -70,22 +70,16 @@ export const generateVerse = async () => {
     const books = await booksResponse.json();
     const response = await api.get("/generateVerse");
     const data = response.data.data;
-
-    const book = books.find((b) => b.id === data.book);
-
-    if (book) {
-      console.log(book, data);
-    } else {
-      console.log("Book not found", data);
-    }
+    const book = books.find((b) => b.bookid === data.book);
 
     return data
       ? {
+          referenceBook: book.name,
           text: data.text,
           chapter: data.chapter,
           book: data.book,
           verse: data.verse,
-          reference: `${book} ${data.chapter}:${data.verse}`,
+          reference: `${book.name} ${data.chapter}:${data.verse}`,
         }
       : null;
   } catch (error) {
