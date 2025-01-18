@@ -18,7 +18,8 @@ const Forum = () => {
       try {
         const response = await fetch(`${API_URL}/posts`);
         if (!response.ok) throw new Error("Failed to fetch posts");
-        setPosts(await response.json());
+        const data = await response.json();
+        setPosts(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -27,8 +28,12 @@ const Forum = () => {
     };
 
     const checkUser = async () => {
-      const loggedInUser = await checkIfLoggedIn();
-      if (loggedInUser.ok) setUser(loggedInUser.user);
+      try {
+        const loggedInUser = await checkIfLoggedIn();
+        if (loggedInUser.ok) setUser(loggedInUser.user);
+      } catch {
+        setError("Failed to check user status.");
+      }
     };
 
     checkUser();
@@ -39,12 +44,15 @@ const Forum = () => {
     e.preventDefault();
 
     if (!title || !content) {
-      setFormError("Both title and content are required.");
+      setFormError("Preencha todos os campos.");
       return;
     }
 
     setFormError("");
-    if (!user) return;
+    if (!user) {
+      toast.error("Você precisa estar logado para criar um post.");
+      return;
+    }
 
     try {
       const response = await fetch(`${API_URL}/posts`, {
@@ -54,52 +62,50 @@ const Forum = () => {
           title,
           content,
           author: user.username,
-          authorId: user._id,
+          authorId: user.id,
         }),
       });
 
       if (response.ok) {
         const newPost = await response.json();
         setPosts((prevPosts) => [...prevPosts, newPost]);
-        toast.success("Post created successfully!");
+        toast.success("Post criado com sucesso!");
         setTitle("");
         setContent("");
       } else {
         const errorData = await response.json();
-        setFormError(errorData.message);
+        setFormError(errorData.message || "Erro ao criar o post.");
       }
-    } catch (error) {
-      toast.error("Error creating post.");
+    } catch {
+      toast.error("Erro ao criar o post.");
     }
   };
 
   const handleDelete = async (postId, authorId) => {
-    if (!user || user._id !== authorId) {
-      toast.error("You can only delete your own posts.");
+    if (!user || user.id !== authorId) {
+      toast.error("Você só pode excluir seus próprios posts.");
       return;
     }
 
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this post?"
+      "Tem certeza de que deseja excluir este post?"
     );
     if (!confirmDelete) return;
 
     try {
       const response = await fetch(`${API_URL}/posts/remove/${postId}`, {
-        method: "POST",
+        method: "DELETE",
       });
 
       if (response.ok) {
-        setPosts((prevPosts) =>
-          prevPosts.filter((post) => post._id !== postId)
-        );
-        toast.success("Post deleted successfully!");
+        setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+        toast.success("Post excluído com sucesso!");
       } else {
         const errorData = await response.json();
-        toast.error("Failed to delete post: " + errorData.message);
+        toast.error("Falha ao excluir o post: " + errorData.message);
       }
-    } catch (error) {
-      toast.error("Error deleting post.");
+    } catch {
+      toast.error("Erro ao excluir o post.");
     }
   };
 
@@ -116,48 +122,48 @@ const Forum = () => {
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-screen">
-        Loading...
+        Carregando...
       </div>
     );
 
   if (error)
     return (
       <div className="flex items-center justify-center min-h-screen text-red-500">
-        Error: {error}
+        Erro: {error}
       </div>
     );
 
   return (
     <div className="max-w-3xl mx-auto p-6 relative">
       <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">
-        Forum
+        Fórum
       </h1>
 
       <div className="bg-white shadow-xl rounded-lg p-6 mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Create a New Post</h2>
+        <h2 className="text-2xl font-semibold mb-4">Criar Novo Post</h2>
         {formError && <div className="text-red-500 mb-4">{formError}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <Input
             type="text"
-            placeholder="Title"
+            placeholder="Título"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
           <Input
             type="text"
-            placeholder="Content"
+            placeholder="Conteúdo"
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
-          <Button label="Create Post" type="submit" />
+          <Button label="Criar Post" type="submit" />
         </form>
       </div>
 
       <ul className="space-y-6">
         {posts.map((post) => (
           <li
-            key={post._id}
+            key={post.id}
             className="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer">
             <div className="flex flex-col sm:flex-row justify-between">
               <div className="flex-1">
@@ -171,17 +177,18 @@ const Forum = () => {
                 <p className="text-gray-500 text-xs">{formatDate(post.date)}</p>
               </div>
               <div className="mt-4 sm:mt-0 text-right sm:text-left">
-                <p className="text-gray-500 text-sm">Author: @{post.author}</p>
-                {user && post.authorId === user._id && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(post._id, post.authorId);
-                    }}
-                    className="text-red-500 text-sm">
-                    Delete
-                  </button>
-                )}
+                <p className="text-gray-500 text-sm">Autor: @{post.author}</p>
+                {user &&
+                  (post.authorId === user.id || user.rolePosition > 1) && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(post.id, post.authorId);
+                      }}
+                      className="text-red-500 text-sm">
+                      Excluir
+                    </button>
+                  )}
               </div>
             </div>
           </li>
