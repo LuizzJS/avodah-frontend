@@ -1,6 +1,5 @@
-import Evento from "./evento.jpg";
-import Image1 from "./img1.jpg";
-import Image2 from "./img2.jpg";
-import Image3 from "./img3.jpg";
+import aniversario from "./aniversario.jpeg";
+import batismo from "./batismo.jpg";
+import culto from "./culto_ensino.jpeg";
 
-export { Evento, Image1, Image2, Image3 };
+export { aniversario, batismo, culto };

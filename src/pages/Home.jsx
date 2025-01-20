@@ -1,12 +1,12 @@
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { useState } from "react";
-import { Evento, Image1, Image2, Image3 } from "../slider_images/export.images";
+import * as Images from "../slider_images/export.images";
 
 const Home = () => {
   const [image, setImage] = useState("");
   const [shown, setShown] = useState(false);
-  const images = [Evento, Image1, Image2, Image3];
-  const slider_images = [Evento];
+  const images = [];
+  const slider_images = [Images.aniversario, Images.batismo, Images.culto];
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleImageClick = (e) => {
@@ -69,7 +69,7 @@ const Home = () => {
             className="w-[200px] h-[200px] max-sm:w-[100px] max-sm:h-[100px] bg-white shadow-md rounded-xl flex justify-center items-center overflow-hidden cursor-pointer"
             onClick={handleImageClick}>
             <img
-              src={Evento}
+              src={Images.culto}
               alt="Thumbnail 1"
               className="rounded-md object-contain min-h-full min-w-full"
             />
@@ -78,7 +78,7 @@ const Home = () => {
             className="w-[200px] h-[200px] max-sm:w-[100px] max-sm:h-[100px] bg-white shadow-md rounded-xl flex justify-center items-center overflow-hidden cursor-pointer"
             onClick={handleImageClick}>
             <img
-              src={Image2}
+              src={Images.batismo}
               alt="Thumbnail 2"
               className="rounded-md object-contain min-h-full min-w-full"
             />

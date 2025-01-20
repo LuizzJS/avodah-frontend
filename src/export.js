@@ -10,8 +10,10 @@ import Header from "./components/Header.jsx";
 import Footer from "./components/Footer.jsx";
 import Profile from "./pages/Profile.jsx";
 import Button from "./components/Button.jsx";
+import Cultos from "./pages/Horarios.jsx";
 import Input from "./components/Input.jsx";
 import Forum from "./pages/Forum.jsx";
+import Sedes from "./pages/Sedes.jsx";
 import Link from "./components/Link.jsx";
 import Home from "./pages/Home.jsx";
 import ToS from "./pages/ToS.jsx";
@@ -29,8 +31,10 @@ export {
   Footer,
   Profile,
   Button,
+  Cultos,
   Input,
   Forum,
+  Sedes,
   Link,
   Home,
   ToS,

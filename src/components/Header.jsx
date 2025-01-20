@@ -8,6 +8,16 @@ import { checkIfLoggedIn } from "../auth";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 
+const cargos = {
+  0: "Desenvolvedor",
+  1: "Pastor Presidente",
+  2: "Pastor Vice-Presidente",
+  3: "Secretário/a",
+  4: "Líder",
+  5: "Influenciador",
+  6: "Membro",
+};
+
 const Header = () => {
   const [isMenuShown, setIsMenuShown] = useState(false);
   const [user, setUser] = useState(null);
@@ -36,8 +46,8 @@ const Header = () => {
   const toggleMenu = () => setIsMenuShown((prev) => !prev);
 
   const buttonText = logged
-    ? `${user?.username} | ${
-        user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)
+    ? `${user.username.charAt(0).toUpperCase() + user.username.slice(1)} | ${
+        cargos[user?.rolePosition]
       }`
     : "Entre ou cadastre-se";
 
@@ -68,7 +78,7 @@ const Header = () => {
                 <Link href="/policy-privacy" label="Política de Privacidade" />
                 <Link href="/tos" label="Termos de Uso" />
                 <Link href="/" label="Sobre nós" />
-                <Link href="/horarios" label="Dias e horários de culto" />
+                <Link href="/cultos" label="Dias e horários de culto" />
                 <Link href="/sedes" label="Sedes" />
               </div>
             </div>

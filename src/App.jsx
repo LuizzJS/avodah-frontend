@@ -13,12 +13,15 @@ const App = () => {
             <Route path="/" element={<Components.Home />} />
             <Route path="/login" element={<Components.LoginPage />} />
             <Route path="/register" element={<Components.RegisterPage />} />
+            <Route path="/tos" element={<Components.ToS />} />
+            <Route path="/error-report" element={<Components.ErrorReport />} />
+            <Route path="/profile" element={<Components.Profile />} />
+            <Route path="/sedes" element={<Components.Sedes />} />
+            <Route path="/cultos" element={<Components.Cultos />} />
             <Route
               path="/policy-privacy"
               element={<Components.PolicyPrivacy />}
             />
-            <Route path="/tos" element={<Components.ToS />} />
-            <Route path="/error-report" element={<Components.ErrorReport />} />
 
             <Route
               path="/versiculo"
@@ -36,8 +39,6 @@ const App = () => {
                 </Components.ProtectedRoute>
               }
             />
-
-            <Route path="/profile" element={<Components.Profile />} />
 
             <Route path="*" element={<Components.NotFound />} />
           </Routes>
