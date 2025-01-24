@@ -1,8 +1,6 @@
-import React from "react";
-
 const Sedes = () => {
   const address =
-    "R. Itaporanga, 88 - Parque Pirajussara, Embu das Artes - SP, 06815-260, Brasil";
+    "R. Itaporanga, 106 - Parque Pirajussara, Embu das Artes - SP, 06815-260, Brasil";
 
   const handleOpenMap = () => {
     const query = encodeURIComponent(address);
