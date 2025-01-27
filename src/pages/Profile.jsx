@@ -94,6 +94,7 @@ const Profile = () => {
     }
     try {
       const response = await setNewPassword(newPassword, emailForPassword);
+      console.log(response);
       if (!response.success) {
         toast.error(
           response.message || "Erro ao atualizar a senha. Tente novamente."
