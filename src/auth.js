@@ -101,7 +101,11 @@ export const setNewRole = async (role, email) => {
 export const setNewPassword = async (password, email) => {
   try {
     const response = await api.post("/set-password", { password, email });
-    return response;
+    return {
+      data: response?.data,
+      success: response?.data?.success,
+      message: response?.data?.message,
+    };
   } catch (error) {
     console.error("Error setting new password:", error);
     return { success: false };
