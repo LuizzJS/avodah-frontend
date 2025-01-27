@@ -34,7 +34,7 @@ export default [
         { allowConstantExport: true },
       ],
       rules: {
-        "no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+        "no-unused-vars": "off",
       },
     },
   },

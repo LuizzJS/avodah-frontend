@@ -86,16 +86,18 @@ const Home = () => {
         </div>
       </div>
       <div className="text-center">
-        <h1 className="text-4xl font-bold text-white font-oswald">
+        <h1 className="text-4xl font-extrabold text-indigo-100 ">
           SOBRE A AVODAH
         </h1>
         <p className="text-sm text-gray-200 mt-2 break-words font-semibold">
-          Somos a Assembleia de Deus Ministério Avodah, uma <br />
-          igreja que vive para glorificar a Deus por meio da adoração, da <br />
-          proclamação da Palavra e do serviço ao próximo. Aqui, você encontrará
+          Somos a Assembleia de Deus Ministério Avodah, uma igreja que vive para
           <br />
-          um ambiente acolhedor para fortalecer sua fé e crescer <br />
-          espiritualmente. Seja bem-vindo à nossa família!
+          glorificar a Deus por meio da adoração, da proclamação da Palavra e do
+          <br />
+          serviço ao próximo. Aqui, você encontrará um ambiente acolhedor para
+          <br />
+          fortalecer sua fé e crescer espiritualmente. Seja bem-vindo à nossa
+          família!
         </p>
       </div>
     </section>

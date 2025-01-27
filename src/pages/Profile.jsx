@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { checkIfLoggedIn, logout } from "../auth";
 import { useNavigate } from "react-router-dom";
@@ -70,6 +71,7 @@ const Profile = () => {
       minute: "2-digit",
       timeZone: "UTC",
     }) || "Data inválida";
+
   const username =
     member.username[0].toUpperCase() + member.username.slice(1) || "N/A";
   const userInfo = [
@@ -96,20 +98,42 @@ const Profile = () => {
   ];
 
   return (
-    <section className="h-full w-full flex justify-center items-center relative">
-      <div className="w-full max-w-4xl p-4 bg-white rounded-lg shadow-lg flex justify-between items-center gap-6">
-        <div className="flex gap-4 items-center justify-center">
+    <section className="min-h-screen bg-gradient-to-r from-gray-100 to-white flex justify-center items-center relative">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg flex flex-col gap-6">
+        <div className="flex flex-col items-center justify-center">
           <div
             id="profile-picture"
-            className="rounded-full w-16 h-16 bg-gray-200 flex justify-center items-center">
-            <img src={DefaultPicture} className="object-cover rounded-full" />
+            className="rounded-full w-32 h-32 bg-gray-200 flex justify-center items-center overflow-hidden">
+            <img
+              src={DefaultPicture}
+              className="object-cover rounded-full"
+              alt="Foto de Perfil"
+            />{" "}
+            {/* Adicionado alt para acessibilidade */}
           </div>
-          <div>
-            <h1 className="text-2xl font-bold mt-4">{username}</h1>
-            <p className="text-sm text-gray-500 ">{member.email}</p>
-          </div>
+          <h1 className="text-2xl font-bold mt-4 text-indigo-800">
+            {username}
+          </h1>{" "}
+          {/* Cor do texto alterada */}
+          <p className="text-sm text-gray-600">{member.email}</p>{" "}
+          {/* Cor do texto alterada */}
         </div>
-        {error && error}
+
+        <div className="flex flex-col gap-4">
+          {userInfo.map((item) => (
+            <div
+              className="flex items-center gap-4 py-2 border-b border-gray-200"
+              key={item.label}>
+              {" "}
+              <div className="text-indigo-600">{item.icon}</div>{" "}
+              <div>
+                <span className="font-medium text-gray-800">{item.label}:</span>{" "}
+                <span className="ml-1 text-gray-700">{item.value}</span>{" "}
+              </div>
+            </div>
+          ))}
+        </div>
+
         <Button label="Sair" icon={<CornerUpLeft />} click={handleLogout} />
       </div>
     </section>

@@ -1,70 +1,73 @@
+const policies = [
+  {
+    title: "1. Informações Coletadas",
+    description:
+      "Coletamos informações como nome, e-mail e dados de navegação quando você interage com nosso site, através de formulários, interações e cookies. Utilizamos ferramentas de análise para entender melhor o comportamento do usuário.",
+  },
+  {
+    title: "2. Uso das Informações",
+    description:
+      "Utilizamos suas informações para otimizar nossos serviços, enviar atualizações relevantes, responder a solicitações e personalizar sua experiência em nosso site. Não compartilhamos seus dados para fins de marketing de terceiros sem seu consentimento explícito.",
+  },
+  {
+    title: "3. Compartilhamento de Informações",
+    description:
+      "Não vendemos, trocamos ou alugamos suas informações pessoais. Podemos compartilhar dados com parceiros confiáveis que nos auxiliam na operação do site, sob estrita confidencialidade. Cumprimos todas as leis de proteção de dados aplicáveis.",
+  },
+  {
+    title: "4. Segurança das Informações",
+    description:
+      "Esta política pode ser atualizada periodicamente. Recomendamos a revisão regular desta página para se manter informado sobre nossas práticas de privacidade. A data da última atualização será sempre exibida.",
+  },
+  {
+    title: "5. Alterações nesta Política",
+    description:
+      "Implementamos medidas de segurança robustas para proteger suas informações contra acessos não autorizados. Embora nos esforcemos para garantir a segurança total, reconhecemos que nenhum método de transmissão online é 100% inviolável.",
+  },
+  {
+    title: "6. Contato",
+    description:
+      "Para dúvidas sobre esta política, entre em contato: asdministerioavodah@gmail.com",
+
+    contact: true,
+  },
+];
+
 const PolicyPrivacy = () => {
   return (
-    <section className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg ">
-      <h1 className="text-3xl font-semibold text-gray-800 mb-6">
-        Política de Privacidade
-      </h1>
+    <section className="max-w-5xl mx-auto p-8  rounded-2xl my-10">
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-extrabold text-indigo-800 tracking-tight mb-4 animate-pulse">
+          Política de Privacidade
+        </h1>
+        <p className="text-gray-600 text-lg">
+          Seu direito à privacidade é fundamental para nós. Leia atentamente
+          nossa política.
+        </p>
+      </div>
 
-      <p className="text-lg text-gray-700 mb-4">
-        A sua privacidade é muito importante para nós. Esta Política de
-        Privacidade explica como coletamos, usamos, divulgamos e protegemos suas
-        informações quando você usa o nosso site.
-      </p>
-
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-        1. Informações Coletadas
-      </h2>
-      <p className="text-lg text-gray-700 mb-4">
-        Coletamos informações pessoais quando você interage conosco, como seu
-        nome, e-mail, e dados de navegação. Essas informações podem ser
-        coletadas por meio de formulários de cadastro, interações com o site, e
-        cookies.
-      </p>
-
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-        2. Uso das Informações
-      </h2>
-      <p className="text-lg text-gray-700 mb-4">
-        Usamos suas informações para fornecer e melhorar nossos serviços, enviar
-        atualizações sobre produtos, responder a solicitações e melhorar a
-        experiência do usuário no site.
-      </p>
-
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-        3. Compartilhamento de Informações
-      </h2>
-      <p className="text-lg text-gray-700 mb-4">
-        Não vendemos, trocamos ou alugamos suas informações pessoais a
-        terceiros. Podemos compartilhar suas informações com parceiros de
-        confiança que nos auxiliam na operação do site, desde que eles concordem
-        em manter essas informações confidenciais.
-      </p>
-
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-        4. Segurança das Informações
-      </h2>
-      <p className="text-lg text-gray-700 mb-4">
-        Tomamos medidas razoáveis para proteger as informações pessoais contra
-        acessos não autorizados, alteração, divulgação ou destruição. No
-        entanto, não podemos garantir a segurança total, pois nenhum método de
-        transmissão pela internet é 100% seguro.
-      </p>
-
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-        5. Alterações nesta Política
-      </h2>
-      <p className="text-lg text-gray-700 mb-4">
-        Podemos atualizar esta Política de Privacidade periodicamente.
-        Recomendamos que você revise esta página regularmente para ficar
-        informado sobre como estamos protegendo suas informações.
-      </p>
-
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">6. Contato</h2>
-      <p className="text-lg text-gray-700 mb-4">
-        Se você tiver dúvidas sobre esta Política de Privacidade, entre em
-        contato conosco através do nosso e-mail: &nbsp;
-        <strong>contato@exemplo.com</strong>.
-      </p>
+      <div className="space-y-6">
+        {policies.map(({ title, description, contact }) => {
+          const splittedDesc = contact ? description.split(":") : "";
+          return (
+            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300">
+              <h2 className="text-2xl font-semibold text-indigo-700 mb-2">
+                {title}
+              </h2>
+              <p className={`text-gray-700 leading-relaxed flex `}>
+                {contact ? splittedDesc[0] + ":" : description} &nbsp;
+                {contact && (
+                  <a
+                    className="hover:text-indigo-800 transition duration-300 cursor-pointer"
+                    href={"mailto:" + splittedDesc[1].trim()}>
+                    {splittedDesc[1]}
+                  </a>
+                )}
+              </p>
+            </div>
+          );
+        })}
+      </div>
     </section>
   );
 };
