@@ -87,3 +87,23 @@ export const generateVerse = async () => {
     throw error;
   }
 };
+
+export const setNewRole = async (role, email) => {
+  try {
+    const response = await api.post("/set-role", { role, email });
+    return response;
+  } catch (error) {
+    console.error("Error setting new role:", error);
+    return { success: false };
+  }
+};
+
+export const setNewPassword = async (password, email) => {
+  try {
+    const response = await api.post("/set-password", { password, email });
+    return response;
+  } catch (error) {
+    console.error("Error setting new password:", error);
+    return { success: false };
+  }
+};
