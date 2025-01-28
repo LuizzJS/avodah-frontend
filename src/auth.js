@@ -94,7 +94,7 @@ export const setNewRole = async (role, email) => {
     return response;
   } catch (error) {
     console.error("Error setting new role:", error);
-    return { success: false };
+    return { success: false, message: error.message };
   }
 };
 
@@ -108,6 +108,6 @@ export const setNewPassword = async (password, email) => {
     };
   } catch (error) {
     console.error("Error setting new password:", error);
-    return { success: false };
+    return { success: false, message: error.message };
   }
 };

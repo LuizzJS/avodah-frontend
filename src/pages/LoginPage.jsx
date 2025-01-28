@@ -61,7 +61,12 @@ const LoginPage = () => {
           {errorMessage && (
             <p className="text-sm text-red-600">{errorMessage}</p>
           )}
-          <Button type="submit" label="Login" icon={<LogIn />} />
+          <Button
+            type="submit"
+            click={handleSubmit}
+            label="Login"
+            icon={<LogIn />}
+          />
         </form>
         <Link href="/register" label="Ainda não tem uma conta? Registre-se" />
       </div>
