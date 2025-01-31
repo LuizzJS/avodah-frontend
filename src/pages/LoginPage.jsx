@@ -2,13 +2,14 @@ import { useState } from "react";
 import { login } from "../auth";
 import { useNavigate } from "react-router-dom";
 import { Input, Link, Button } from "../export.js";
-import { User2, Lock, LogIn } from "lucide-react";
+import { User2, Lock, LogIn, Loader } from "lucide-react";
 import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -65,7 +66,7 @@ const LoginPage = () => {
             type="submit"
             click={handleSubmit}
             label="Login"
-            icon={<LogIn />}
+            icon={isLoading ? <Loader className="animate-spin" /> : <LogIn />}
           />
         </form>
         <Link href="/register" label="Ainda não tem uma conta? Registre-se" />

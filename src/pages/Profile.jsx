@@ -18,7 +18,7 @@ import DefaultPicture from "../assets/default_user.jpg";
 
 const Profile = () => {
   const [member, setMember] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [isEditingRole, setIsEditingRole] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
@@ -30,6 +30,7 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
+      setIsLoading(true);
       try {
         const { ok, user } = await checkIfLoggedIn();
         if (ok && user) {
@@ -40,6 +41,8 @@ const Profile = () => {
       } catch (err) {
         console.error("Error fetching user:", err);
         navigate("/login");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchUser();
@@ -68,8 +71,10 @@ const Profile = () => {
   };
 
   const handleRoleUpdate = async () => {
+    setIsLoading(true);
     if (!newRole || !emailForRole) {
       toast.error("Por favor, preencha todos os campos.");
+      setIsLoading(false);
       return;
     }
     try {
@@ -84,17 +89,20 @@ const Profile = () => {
       }
     } catch (err) {
       toast.error("Erro ao atualizar o cargo: " + err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handlePasswordUpdate = async () => {
+    setIsLoading(true);
     if (!newPassword || !emailForPassword) {
       toast.error("Por favor, preencha todos os campos.");
+      setIsLoading(false);
       return;
     }
     try {
       const response = await setNewPassword(newPassword, emailForPassword);
-      console.log(response);
       if (!response.success) {
         toast.error(
           response.message || "Erro ao atualizar a senha. Tente novamente."
@@ -105,8 +113,14 @@ const Profile = () => {
       }
     } catch (err) {
       toast.error("Erro ao atualizar a senha: " + err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   if (!member) {
     return <div>Loading...</div>;
@@ -226,7 +240,7 @@ const Profile = () => {
                 <Input
                   placeholder="Email do Usuário"
                   onChange={(e) => setEmailForPassword(e.target.value)}
-                />
+                />{" "}
                 <div className="flex justify-end space-x-2">
                   <Button
                     label="Salvar"
@@ -243,6 +257,7 @@ const Profile = () => {
             )}
           </div>
         )}
+
         <Button
           label="Sair"
           icon={<CornerUpLeft />}
