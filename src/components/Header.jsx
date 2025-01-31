@@ -23,20 +23,31 @@ const Header = () => {
   const [isMenuShown, setIsMenuShown] = useState(false);
   const [user, setUser] = useState(null);
   const [logged, setLogged] = useState(false);
+  const [buttonText, setButtonText] = useState("Carregando...");
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const data = await checkIfLoggedIn();
-        if (!data.ok) {
+        if (!data.ok || !data.user) {
           setLogged(false);
+          setUser(null);
+          setButtonText("Entre ou cadastre-se");
           return;
         }
         setUser(data.user);
         setLogged(true);
+        setButtonText(
+          `${
+            data.user.username?.charAt(0).toUpperCase() +
+            data.user.username?.slice(1)
+          } | ${cargos[data.user?.rolePosition] || "Membro"}`
+        );
       } catch {
         setLogged(false);
+        setUser(null);
+        setButtonText("Entre ou cadastre-se");
       }
     };
 
@@ -50,20 +61,16 @@ const Header = () => {
 
   const toggleMenu = () => setIsMenuShown((prev) => !prev);
 
-  const buttonText =
-    logged && user
-      ? `${
-          user.username?.charAt(0).toUpperCase() + user.username?.slice(1)
-        } | ${cargos[user?.rolePosition] || "Membro"}`
-      : "Entre ou cadastre-se";
-
   return (
     <header>
       <div className="flex justify-between items-center h-[15vh] w-full max-md:hidden p-3">
-        <a href="/">
-          <img src={AvodahLogo} alt="Ministério Avodah" className="h-60" />
+        <a onClick={() => navigate("/")}>
+          <img
+            src={AvodahLogo}
+            alt="Ministério Avodah"
+            className="h-60 cursor-pointer"
+          />
         </a>
-
         <Button click={handleButtonClick} label={buttonText} icon={<User2 />} />
       </div>
 
