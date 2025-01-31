@@ -6,6 +6,7 @@ import { User2, Menu, X } from "lucide-react";
 import AvodahLogo from "/avodah-transparent.png";
 import { checkIfLoggedIn } from "../auth";
 import axios from "axios";
+
 axios.defaults.withCredentials = true;
 
 const cargos = {
@@ -28,13 +29,17 @@ const Header = () => {
     const fetchUser = async () => {
       try {
         const data = await checkIfLoggedIn();
-        if (!data.ok) return setLogged(false);
+        if (!data.ok) {
+          setLogged(false);
+          return;
+        }
         setUser(data.user);
         setLogged(true);
       } catch {
         setLogged(false);
       }
     };
+
     fetchUser();
   }, []);
 
@@ -45,14 +50,15 @@ const Header = () => {
 
   const toggleMenu = () => setIsMenuShown((prev) => !prev);
 
-  const buttonText = logged
-    ? `${user.username.charAt(0).toUpperCase() + user.username.slice(1)} | ${
-        cargos[user?.rolePosition]
-      }`
-    : "Entre ou cadastre-se";
+  const buttonText =
+    logged && user
+      ? `${
+          user.username?.charAt(0).toUpperCase() + user.username?.slice(1)
+        } | ${cargos[user?.rolePosition] || "Membro"}`
+      : "Entre ou cadastre-se";
 
   return (
-    <header className="">
+    <header>
       <div className="flex justify-between items-center h-[15vh] w-full max-md:hidden p-3">
         <a href="/">
           <img src={AvodahLogo} alt="Ministério Avodah" className="h-60" />
