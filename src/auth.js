@@ -57,7 +57,9 @@ export const checkIfLoggedIn = async () => {
   try {
     const { data } = await api.get("/isLogged");
 
-    return data.success ? { ok: true, user: data.data } : { ok: false };
+    return data.success
+      ? { ok: true, user: data.data }
+      : { ok: false, user: null };
   } catch (error) {
     console.error("Error checking login status:", error);
     return { ok: false };
