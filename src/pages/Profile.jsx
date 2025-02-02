@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { checkIfLoggedIn, logout, setNewRole, setNewPassword } from "../auth";
+import {
+  checkIfLoggedIn,
+  logout,
+  setNewRole,
+  setNewPassword,
+  changePicture,
+} from "../auth";
 import { useNavigate } from "react-router-dom";
 import {
   User,
@@ -10,6 +16,7 @@ import {
   CornerUpLeft,
   Edit,
   Save,
+  Upload,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import Button from "../components/Button";
@@ -19,9 +26,9 @@ import DefaultPicture from "../assets/default_user.jpg";
 const Profile = () => {
   const [member, setMember] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
   const [isEditingRole, setIsEditingRole] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
+  const [picture, setPicture] = useState(DefaultPicture);
   const [newRole, setNewRoleValue] = useState("");
   const [emailForRole, setEmailForRole] = useState("");
   const [newPassword, setNewPasswordValue] = useState("");
@@ -30,16 +37,15 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      setIsLoading(true);
       try {
         const { ok, user } = await checkIfLoggedIn();
         if (ok && user) {
           setMember(user);
+          setPicture(user.profilePicture || DefaultPicture);
         } else {
           navigate("/login");
         }
-      } catch (err) {
-        console.error("Error fetching user:", err);
+      } catch {
         navigate("/login");
       } finally {
         setIsLoading(false);
@@ -49,9 +55,8 @@ const Profile = () => {
   }, [navigate]);
 
   const handleLogout = async () => {
-    setIsLoading(true);
-    setError("");
     try {
+      setIsLoading(true);
       const { success } = await logout();
       if (success) {
         toast.success("Conta desconectada com sucesso.");
@@ -59,162 +64,119 @@ const Profile = () => {
           navigate("/");
           window.location.reload();
         }, 2000);
-      } else {
-        throw new Error("Falha ao desconectar.");
       }
-    } catch (err) {
-      setError("Um erro inesperado ocorreu.");
-      toast.error("Um erro inesperado ocorreu: " + err.message);
+    } catch {
+      toast.error("Erro ao desconectar.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleRoleUpdate = async () => {
-    setIsLoading(true);
-    if (!newRole || !emailForRole) {
-      toast.error("Por favor, preencha todos os campos.");
-      setIsLoading(false);
-      return;
-    }
+  const handleUpdate = async (
+    updateFunc,
+    value,
+    email,
+    successMsg,
+    closeEdit
+  ) => {
+    if (!value || !email)
+      return toast.error("Por favor, preencha todos os campos.");
     try {
-      const response = await setNewRole(newRole, emailForRole);
-      if (!response.success) {
-        toast.error(
-          response.message || "Erro ao atualizar o cargo. Tente novamente."
-        );
+      setIsLoading(true);
+      const response = await updateFunc(value, email);
+      if (response.success) {
+        toast.success(successMsg);
+        closeEdit(false);
       } else {
-        setIsEditingRole(false);
-        toast.success("Cargo atualizado com sucesso.");
+        toast.error(response.message || "Erro ao atualizar.");
       }
-    } catch (err) {
-      toast.error("Erro ao atualizar o cargo: " + err.message);
+    } catch {
+      toast.error("Erro ao atualizar.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handlePasswordUpdate = async () => {
-    setIsLoading(true);
-    if (!newPassword || !emailForPassword) {
-      toast.error("Por favor, preencha todos os campos.");
-      setIsLoading(false);
-      return;
-    }
-    try {
-      const response = await setNewPassword(newPassword, emailForPassword);
-      if (!response.success) {
-        toast.error(
-          response.message || "Erro ao atualizar a senha. Tente novamente."
-        );
-      } else {
-        setIsEditingPassword(false);
-        toast.success("Senha atualizada com sucesso.");
-      }
-    } catch (err) {
-      toast.error("Erro ao atualizar a senha: " + err.message);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => setPicture(reader.result);
+    reader.onloadend = () => changePicture(user, reader.result);
+    reader.readAsDataURL(file);
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  if (isLoading) return <div>Loading...</div>;
+  if (!member) return <div>Loading...</div>;
 
-  if (!member) {
-    return <div>Loading...</div>;
-  }
-
-  const formatDate = (date) => {
-    return (
-      new Date(date).toLocaleString("pt-BR", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        timeZone: "UTC",
-      }) || "Data inválida"
-    );
-  };
-
-  const username =
-    member.username.charAt(0).toUpperCase() + member.username.slice(1) || "N/A";
   const userInfo = [
-    { icon: <User />, label: "Nome", value: username },
-    { icon: <Mail />, label: "Email", value: member.email || "N/A" },
+    { icon: <User />, label: "Nome", value: member.username },
+    { icon: <Mail />, label: "Email", value: member.email },
     {
       icon: <Clock />,
       label: "Conta criada em",
-      value: formatDate(member.createdAt),
+      value: new Date(member.createdAt).toLocaleString("pt-BR"),
     },
     {
       icon: <Briefcase />,
       label: "Cargo",
-      value: `${
-        member.role.charAt(0).toUpperCase() + member.role.slice(1)
-      } (Posição ${member.rolePosition})`,
+      value: `${member.role} (Posição ${member.rolePosition})`,
     },
-    {
-      icon: <IdCard />,
-      label: "Número de Identificação",
-      value: member._id.slice(0, 9) + "*".repeat(member._id.slice(9).length),
-    },
+    { icon: <IdCard />, label: "ID", value: member._id.slice(0, 9) + "******" },
   ];
 
   return (
-    <section className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 space-y-6">
+    <section className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 space-y-6">
         <div className="text-center">
-          <div className="mx-auto h-24 w-24 rounded-full bg-gray-200 overflow-hidden">
-            <img
-              src={DefaultPicture}
-              alt="Profile"
-              className="object-cover w-full h-full"
-            />
-          </div>
-          <h2 className="mt-4 text-2xl font-bold text-gray-900">{username}</h2>
+          <img
+            src={picture}
+            alt="Profile"
+            className="mx-auto h-24 w-24 rounded-full object-cover"
+          />
+          <h2 className="mt-4 text-xl font-bold">{member.username}</h2>
           <p className="text-gray-600">{member.email}</p>
         </div>
-
         <div className="space-y-4">
-          {userInfo.map((item) => (
-            <div
-              key={item.label}
-              className="flex items-center border-b border-gray-200 py-2">
-              <div className="text-indigo-600 mr-3">{item.icon}</div>
+          {userInfo.map(({ icon, label, value }) => (
+            <div key={label} className="flex items-center border-b pb-2">
+              <div className="text-indigo-600 mr-3">{icon}</div>
               <div>
-                <dt className="text-sm font-medium text-gray-500">
-                  {item.label}
-                </dt>
-                <dd className="text-gray-900">{item.value}</dd>
+                <dt className="text-sm font-medium text-gray-500">{label}</dt>
+                <dd className="text-gray-900">{value}</dd>
               </div>
             </div>
           ))}
         </div>
-
         {member.rolePosition === 0 && (
-          <div className="flex flex-col justify-center items-center gap-4">
+          <div className="space-y-4">
             <Button
               label="Editar Cargo"
               icon={<Edit />}
-              click={() => setIsEditingRole((prev) => !prev)}
+              click={() => setIsEditingRole(!isEditingRole)}
             />
             {isEditingRole && (
-              <div className="bg-gray-50 p-4 rounded-md space-y-4 w-full">
+              <div className="bg-gray-50 p-4 rounded-md">
                 <Input
                   placeholder="Novo Cargo"
                   onChange={(e) => setNewRoleValue(e.target.value)}
                 />
                 <Input
-                  placeholder="Email do Usuário"
+                  placeholder="Email"
                   onChange={(e) => setEmailForRole(e.target.value)}
                 />
                 <div className="flex justify-end space-x-2">
                   <Button
                     label="Salvar"
-                    click={handleRoleUpdate}
+                    click={() =>
+                      handleUpdate(
+                        setNewRole,
+                        newRole,
+                        emailForRole,
+                        "Cargo atualizado",
+                        setIsEditingRole
+                      )
+                    }
                     icon={<Save />}
                   />
                   <Button
@@ -228,23 +190,31 @@ const Profile = () => {
             <Button
               label="Alterar Senha"
               icon={<Edit />}
-              click={() => setIsEditingPassword((prev) => !prev)}
+              click={() => setIsEditingPassword(!isEditingPassword)}
             />
             {isEditingPassword && (
-              <div className="bg-gray-50 p-4 rounded-md space-y-4 w-full">
+              <div className="bg-gray-50 p-4 rounded-md">
                 <Input
                   type="password"
                   placeholder="Nova Senha"
                   onChange={(e) => setNewPasswordValue(e.target.value)}
                 />
                 <Input
-                  placeholder="Email do Usuário"
+                  placeholder="Email"
                   onChange={(e) => setEmailForPassword(e.target.value)}
-                />{" "}
+                />
                 <div className="flex justify-end space-x-2">
                   <Button
                     label="Salvar"
-                    click={handlePasswordUpdate}
+                    click={() =>
+                      handleUpdate(
+                        setNewPassword,
+                        newPassword,
+                        emailForPassword,
+                        "Senha atualizada",
+                        setIsEditingPassword
+                      )
+                    }
                     icon={<Save />}
                   />
                   <Button
@@ -255,14 +225,24 @@ const Profile = () => {
                 </div>
               </div>
             )}
+            <Button
+              label="Alterar Foto"
+              icon={<Upload />}
+              click={() => document.getElementById("fileInput").click()}
+            />
+            <input
+              id="fileInput"
+              type="file"
+              className="hidden"
+              onChange={handleUpload}
+            />
           </div>
         )}
-
         <Button
           label="Sair"
           icon={<CornerUpLeft />}
           click={handleLogout}
-          className="w-full mt-6"
+          className="w-full"
         />
       </div>
     </section>

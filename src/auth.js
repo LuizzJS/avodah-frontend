@@ -113,3 +113,17 @@ export const setNewPassword = async (password, email) => {
     return { success: false, message: error.message };
   }
 };
+
+export const changePicture = async (user, picture) => {
+  try {
+    const response = await api.post("/change-picture", { user, picture });
+    return {
+      data: response?.data,
+      success: response?.data?.success,
+      message: response?.data?.message,
+    };
+  } catch (error) {
+    console.error("Error setting new password:", error);
+    return { success: false, message: error.message };
+  }
+};
