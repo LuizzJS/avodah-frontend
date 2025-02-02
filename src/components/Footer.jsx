@@ -1,4 +1,4 @@
-import { Instagram, Youtube } from "lucide-react";
+import { Instagram, MapPin, Youtube } from "lucide-react";
 import AvodahLogo from "/avodah-transparent.png";
 import Link from "./Link";
 
@@ -36,6 +36,13 @@ const Footer = () => {
             rel="noopener noreferrer"
             className="p-2 rounded-full bg-blue-500 flex items-center justify-center hover:scale-105 hover:bg-blue-600 transition-all duration-500">
             <Youtube size={20} color="white" />
+          </a>
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=R.%20Itaporanga%2C%20106%20-%20Parque%20Pirajussara%2C%20Embu%20das%20Artes%20-%20SP%2C%2006815-260%2C%20Brasil"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 rounded-full bg-blue-500 flex items-center justify-center hover:scale-105 hover:bg-blue-600 transition-all duration-500">
+            <MapPin size={20} color="white" />
           </a>
         </div>
       </div>
