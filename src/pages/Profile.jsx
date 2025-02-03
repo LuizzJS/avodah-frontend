@@ -76,7 +76,6 @@ const Profile = () => {
     const updateFunc = type === "role" ? setNewRole : setNewPassword;
 
     if (!value || !email) return toast.error("Preencha todos os campos.");
-    setIsLoading(true);
 
     try {
       const response = await updateFunc(value, email);
