@@ -41,7 +41,9 @@ const Profile = () => {
         const { ok, user } = await checkIfLoggedIn();
         if (ok && user) {
           setMember(user);
-          setPicture(user.profilePicture || DefaultPicture);
+          setPicture(
+            user.profilePicture !== "" ? user.profilePicture : DefaultPicture
+          );
         } else {
           navigate("/login");
         }
@@ -100,10 +102,17 @@ const Profile = () => {
   const handleUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Por favor, envie apenas imagens.");
+      return;
+    }
+
     const reader = new FileReader();
     reader.onloadend = () => setPicture(reader.result);
-    reader.onloadend = () => changePicture(user, reader.result);
     reader.readAsDataURL(file);
+
+    await changePicture(file);
   };
 
   if (isLoading) return <div>Loading...</div>;
