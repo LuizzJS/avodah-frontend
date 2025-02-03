@@ -127,7 +127,7 @@ export const changePicture = async (user, picture) => {
       message: response?.data?.message,
     };
   } catch (error) {
-    console.error("Error setting new password:", error);
+    console.error("Error changing picture:", error);
     return { success: false, message: error.message };
   }
 };
