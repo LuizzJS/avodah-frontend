@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   checkIfLoggedIn,
   logout,
@@ -6,7 +7,6 @@ import {
   setNewPassword,
   changePicture,
 } from "../auth";
-import { useNavigate } from "react-router-dom";
 import {
   User,
   Mail,
@@ -26,13 +26,13 @@ import DefaultPicture from "../assets/default_user.jpg";
 const Profile = () => {
   const [member, setMember] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isEditingRole, setIsEditingRole] = useState(false);
-  const [isEditingPassword, setIsEditingPassword] = useState(false);
-  const [picture, setPicture] = useState(DefaultPicture);
-  const [newRole, setNewRoleValue] = useState("");
-  const [emailForRole, setEmailForRole] = useState("");
-  const [newPassword, setNewPasswordValue] = useState("");
-  const [emailForPassword, setEmailForPassword] = useState("");
+  const [editMode, setEditMode] = useState({ role: false, password: false });
+  const [formData, setFormData] = useState({
+    role: "",
+    password: "",
+    email: "",
+  });
+  const [picture, setPicture] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,12 +41,8 @@ const Profile = () => {
         const { ok, user } = await checkIfLoggedIn();
         if (ok && user) {
           setMember(user);
-          setPicture(
-            user.profilePicture !== "" ? user.profilePicture : DefaultPicture
-          );
-        } else {
-          navigate("/login");
-        }
+          setPicture(user.profilePicture || DefaultPicture);
+        } else navigate("/login");
       } catch {
         navigate("/login");
       } finally {
@@ -57,15 +53,15 @@ const Profile = () => {
   }, [navigate]);
 
   const handleLogout = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const { success } = await logout();
       if (success) {
-        toast.success("Conta desconectada com sucesso.");
+        toast.success("Conta desconectada.");
         setTimeout(() => {
           navigate("/");
           window.location.reload();
-        }, 2000);
+        }, 1500);
       }
     } catch {
       toast.error("Erro ao desconectar.");
@@ -74,21 +70,19 @@ const Profile = () => {
     }
   };
 
-  const handleUpdate = async (
-    updateFunc,
-    value,
-    email,
-    successMsg,
-    closeEdit
-  ) => {
-    if (!value || !email)
-      return toast.error("Por favor, preencha todos os campos.");
+  const handleUpdate = async (type) => {
+    const { email, role, password } = formData;
+    const value = type === "role" ? role : password;
+    const updateFunc = type === "role" ? setNewRole : setNewPassword;
+
+    if (!value || !email) return toast.error("Preencha todos os campos.");
+    setIsLoading(true);
+
     try {
-      setIsLoading(true);
       const response = await updateFunc(value, email);
       if (response.success) {
-        toast.success(successMsg);
-        closeEdit(false);
+        toast.success(`${type === "role" ? "Cargo" : "Senha"} atualizado(a).`);
+        setEditMode((prev) => ({ ...prev, [type]: false }));
       } else {
         toast.error(response.message || "Erro ao atualizar.");
       }
@@ -101,12 +95,8 @@ const Profile = () => {
 
   const handleUpload = async (e) => {
     const file = e.target.files[0];
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      alert("Por favor, envie apenas imagens.");
-      return;
-    }
+    if (!file || !file.type.startsWith("image/"))
+      return toast.error("Apenas imagens são permitidas.");
 
     const reader = new FileReader();
     reader.onloadend = () => setPicture(reader.result);
@@ -115,8 +105,7 @@ const Profile = () => {
     await changePicture(file);
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (!member) return <div>Loading...</div>;
+  if (isLoading || !member) return <div>Loading...</div>;
 
   const userInfo = [
     { icon: <User />, label: "Nome", value: member.username },
@@ -146,6 +135,7 @@ const Profile = () => {
           <h2 className="mt-4 text-xl font-bold">{member.username}</h2>
           <p className="text-gray-600">{member.email}</p>
         </div>
+
         <div className="space-y-4">
           {userInfo.map(({ icon, label, value }) => (
             <div key={label} className="flex items-center border-b pb-2">
@@ -157,83 +147,60 @@ const Profile = () => {
             </div>
           ))}
         </div>
+
         {member.rolePosition === 0 && (
           <div className="space-y-4">
-            <Button
-              label="Editar Cargo"
-              icon={<Edit />}
-              click={() => setIsEditingRole(!isEditingRole)}
-            />
-            {isEditingRole && (
-              <div className="bg-gray-50 p-4 rounded-md">
-                <Input
-                  placeholder="Novo Cargo"
-                  onChange={(e) => setNewRoleValue(e.target.value)}
+            {["role", "password"].map((type) => (
+              <div key={type}>
+                <Button
+                  label={type === "role" ? "Editar Cargo" : "Alterar Senha"}
+                  icon={<Edit />}
+                  click={() =>
+                    setEditMode((prev) => ({ ...prev, [type]: !prev[type] }))
+                  }
                 />
-                <Input
-                  placeholder="Email"
-                  onChange={(e) => setEmailForRole(e.target.value)}
-                />
-                <div className="flex justify-end space-x-2">
-                  <Button
-                    label="Salvar"
-                    click={() =>
-                      handleUpdate(
-                        setNewRole,
-                        newRole,
-                        emailForRole,
-                        "Cargo atualizado",
-                        setIsEditingRole
-                      )
-                    }
-                    icon={<Save />}
-                  />
-                  <Button
-                    label="Cancelar"
-                    secondary
-                    click={() => setIsEditingRole(false)}
-                  />
-                </div>
+                {editMode[type] && (
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <Input
+                      type={type === "password" ? "password" : "text"}
+                      placeholder={
+                        type === "role" ? "Novo Cargo" : "Nova Senha"
+                      }
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          [type]: e.target.value,
+                        }))
+                      }
+                    />
+                    <Input
+                      placeholder="Email"
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          email: e.target.value,
+                        }))
+                      }
+                    />
+                    <div className="flex justify-end space-x-2">
+                      <Button
+                        label="Salvar"
+                        click={() => handleUpdate(type)}
+                        icon={<Save />}
+                      />
+                      <Button
+                        label="Cancelar"
+                        secondary
+                        click={() =>
+                          setEditMode((prev) => ({ ...prev, [type]: false }))
+                        }
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-            <Button
-              label="Alterar Senha"
-              icon={<Edit />}
-              click={() => setIsEditingPassword(!isEditingPassword)}
-            />
-            {isEditingPassword && (
-              <div className="bg-gray-50 p-4 rounded-md">
-                <Input
-                  type="password"
-                  placeholder="Nova Senha"
-                  onChange={(e) => setNewPasswordValue(e.target.value)}
-                />
-                <Input
-                  placeholder="Email"
-                  onChange={(e) => setEmailForPassword(e.target.value)}
-                />
-                <div className="flex justify-end space-x-2">
-                  <Button
-                    label="Salvar"
-                    click={() =>
-                      handleUpdate(
-                        setNewPassword,
-                        newPassword,
-                        emailForPassword,
-                        "Senha atualizada",
-                        setIsEditingPassword
-                      )
-                    }
-                    icon={<Save />}
-                  />
-                  <Button
-                    label="Cancelar"
-                    secondary
-                    click={() => setIsEditingPassword(false)}
-                  />
-                </div>
-              </div>
-            )}
+            ))}
+
             <Button
               label="Alterar Foto"
               icon={<Upload />}
@@ -247,6 +214,7 @@ const Profile = () => {
             />
           </div>
         )}
+
         <Button
           label="Sair"
           icon={<CornerUpLeft />}
