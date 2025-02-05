@@ -101,7 +101,8 @@ const Profile = () => {
     reader.onloadend = () => setPicture(reader.result);
     reader.readAsDataURL(file);
 
-    await changePicture(member, reader.result);
+    const changed = await changePicture(member, reader.result);
+    console.log(reader.result, changed);
   };
 
   if (isLoading || !member) return <div>Loading...</div>;
