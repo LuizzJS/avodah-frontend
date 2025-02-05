@@ -120,6 +120,8 @@ export const setNewPassword = async (password, email) => {
 
 export const changePicture = async (user, picture) => {
   try {
+    if (!user || !picture)
+      return { success: false, message: "Dados incompletos.", user, picture };
     const response = await api.post("/change-picture", { user, picture });
     return {
       data: response?.data,

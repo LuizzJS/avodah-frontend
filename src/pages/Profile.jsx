@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import imageCompression from "browser-image-compression";
 import { useNavigate } from "react-router-dom";
 import {
   checkIfLoggedIn,
@@ -6,7 +7,7 @@ import {
   setNewRole,
   setNewPassword,
   changePicture,
-} from "../auth";
+} from "../auth.js";
 import {
   User,
   Mail,
@@ -97,15 +98,35 @@ const Profile = () => {
     if (!file || !file.type.startsWith("image/"))
       return toast.error("Apenas imagens são permitidas.");
 
-    const reader = new FileReader();
-    reader.onloadend = () => setPicture(reader.result);
-    reader.readAsDataURL(file);
+    try {
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 0.1,
+        maxWidthOrHeight: 800,
+        useWebWorker: true,
+      });
+      const reader = new FileReader();
 
-    const changed = await changePicture(member, reader.result);
-    console.log(reader.result, changed);
+      reader.onloadend = async () => {
+        const imageBase64 = reader.result;
+        setPicture(imageBase64);
+        const response = await changePicture(member, imageBase64);
+        response.success
+          ? toast.success("Imagem atualizada com sucesso!")
+          : toast.error(response.message || "Erro ao atualizar imagem.");
+      };
+
+      reader.readAsDataURL(compressedFile);
+    } catch (error) {
+      toast.error("Erro ao processar a imagem.");
+    }
   };
 
-  if (isLoading || !member) return <div>Loading...</div>;
+  if (isLoading || !member)
+    return (
+      <div className="flex justify-center items-center h-[100%] w-[100%]">
+        Loading...
+      </div>
+    );
 
   const userInfo = [
     { icon: <User />, label: "Nome", value: member.username },

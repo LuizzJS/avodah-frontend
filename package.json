@@ -12,6 +12,8 @@
   "dependencies": {
     "avodah": "file:..",
     "axios": "latest",
+    "body-parser": "^1.20.3",
+    "browser-image-compression": "^2.0.2",
     "check-password-strength": "latest",
     "dotenv": "latest",
     "email-validator": "latest",
