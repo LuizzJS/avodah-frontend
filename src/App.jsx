@@ -31,14 +31,7 @@ const App = () => {
                 </Components.NetworkProtection>
               }
             />
-            <Route
-              path="/forum"
-              element={
-                <Components.ProtectedRoute>
-                  <Components.Forum />
-                </Components.ProtectedRoute>
-              }
-            />
+            <Route path="/forum" element={<Components.Forum />} />
 
             <Route path="*" element={<Components.NotFound />} />
           </Routes>

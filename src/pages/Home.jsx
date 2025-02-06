@@ -16,6 +16,7 @@ const Home = () => {
     Images.another4,
     Images.another5,
   ];
+
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleImageClick = (e) => {
@@ -23,15 +24,12 @@ const Home = () => {
     setShown(true);
   };
 
-  const handleNext = () => {
+  const handleNext = () =>
     setCurrentIndex((prevIndex) => (prevIndex + 1) % slider_images.length);
-  };
-
-  const handlePrev = () => {
+  const handlePrev = () =>
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? slider_images.length - 1 : prevIndex - 1
     );
-  };
 
   return (
     <section
@@ -54,6 +52,7 @@ const Home = () => {
           </div>
         </div>
       )}
+
       <div className="flex justify-center items-center gap-4">
         <div className="relative w-[400px] h-[400px] max-sm:w-[200px] max-sm:h-[200px] bg-white shadow-md rounded-xl flex justify-center items-center overflow-hidden">
           <button
@@ -73,32 +72,26 @@ const Home = () => {
             <ChevronRight />
           </button>
         </div>
+
         <div className="flex flex-col gap-4">
-          <div
-            className="w-[200px] h-[200px] max-sm:w-[100px] max-sm:h-[100px] bg-white shadow-md rounded-xl flex justify-center items-center overflow-hidden cursor-pointer"
-            onClick={handleImageClick}>
-            <img
-              src={Images.culto}
-              alt="Thumbnail 1"
-              className="rounded-md object-contain min-h-full min-w-full"
-            />
-          </div>
-          <div
-            className="w-[200px] h-[200px] max-sm:w-[100px] max-sm:h-[100px] bg-white shadow-md rounded-xl flex justify-center items-center overflow-hidden cursor-pointer"
-            onClick={handleImageClick}>
-            <img
-              src={Images.batismo}
-              alt="Thumbnail 2"
-              className="rounded-md object-contain min-h-full min-w-full"
-            />
-          </div>
+          {[Images.culto, Images.batismo].map((img, idx) => (
+            <div
+              key={idx}
+              className="w-[200px] h-[200px] max-sm:w-[100px] max-sm:h-[100px] bg-white shadow-md rounded-xl flex justify-center items-center overflow-hidden cursor-pointer"
+              onClick={handleImageClick}>
+              <img
+                src={img}
+                alt={`Thumbnail ${idx + 1}`}
+                className="rounded-md object-contain min-h-full min-w-full"
+              />
+            </div>
+          ))}
         </div>
       </div>
-      <div className="text-center">
-        <h1 className="text-4xl font-extrabold text-indigo-100 ">
-          SOBRE A AVODAH
-        </h1>
-        <p className="text-sm text-gray-200 mt-2 break-words font-semibold">
+
+      <div className="text-center max-w-3xl  ">
+        <h1 className="text-5xl font-bold text-white mb-4">SOBRE A AVODAH</h1>
+        <p className="text-lg text-gray-200 mt-2 break-words ">
           Somos a Assembleia de Deus Ministério Avodah, uma igreja que vive para
           <br />
           glorificar a Deus por meio da adoração, da proclamação da Palavra e do

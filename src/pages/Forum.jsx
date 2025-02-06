@@ -3,6 +3,7 @@ import { API_URL, checkIfLoggedIn } from "../auth.js";
 import Input from "../components/Input.jsx";
 import Button from "../components/Button.jsx";
 import toast from "react-hot-toast";
+import { AlignLeft, Edit, Heading, MessageCircle } from "lucide-react";
 
 const Forum = () => {
   const [posts, setPosts] = useState([]);
@@ -65,6 +66,7 @@ const Forum = () => {
           authorId: user.id,
         }),
       });
+      console.log(response);
 
       if (response.ok) {
         const newPost = await response.json();
@@ -134,35 +136,41 @@ const Forum = () => {
     );
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="bg-gray-100">
       <div className="max-w-3xl mx-auto p-6 py-12">
-        <h1 className="text-5xl font-bold mb-8 text-center text-gray-800 drop-shadow-lg">
+        <h1 className="text-5xl font-bold mb-8 text-center text-gray-800">
           Forum
         </h1>
 
         <div className="bg-white shadow-xl rounded-lg p-8 mb-8 transition duration-300 hover:scale-105">
           <h2 className="text-3xl font-semibold mb-6 text-gray-800">
-            Create New Post
+            Criar Post
           </h2>
-          {formError && <div className="text-red-500 mb-4">{formError}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               type="text"
-              placeholder="Title"
+              placeholder="Titulo"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              icon={Heading}
             />
             <Input
               type="text"
-              placeholder="Content"
+              placeholder="Descrição"
               value={content}
               onChange={(e) => setContent(e.target.value)}
+              className="h-full"
+              icon={AlignLeft}
             />
+            {formError && (
+              <div className="text-red-500 mb-4 text-center">{formError}</div>
+            )}
             <Button
-              label="Create Post"
+              label="Enviar Post"
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
+              className="w-full"
+              icon={<MessageCircle />}
             />
           </form>
         </div>
