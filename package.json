@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "avodah": "file:..",
     "axios": "latest",
     "body-parser": "^1.20.3",

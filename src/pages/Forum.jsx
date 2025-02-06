@@ -4,6 +4,7 @@ import Input from "../components/Input.jsx";
 import Button from "../components/Button.jsx";
 import toast from "react-hot-toast";
 import { AlignLeft, Heading, MessageCircle } from "lucide-react";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const Forum = () => {
   const [posts, setPosts] = useState([]);
@@ -14,6 +15,22 @@ const Forum = () => {
   const [formError, setFormError] = useState("");
   const [user, setUser] = useState(null);
   const [fullContent, setFullContent] = useState({});
+
+  const containsSensitiveContent = async () => {
+    const genAI = new GoogleGenerativeAI(
+      "AIzaSyBTdHQfR3XdHSUPvCIZiLxZwVfs5J0mifo"
+    );
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const response = await model.generateContent(
+      `There's any sensitive content in this text: "${content} || ${title}"? Answer with Yes or No. Check every single word and all languages and types of writing methods. `
+    );
+    if (response) {
+      return response.response.text().includes("Yes");
+    }
+
+    return false;
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -55,6 +72,13 @@ const Forum = () => {
       toast.error("You must be logged in to create a post.");
       return;
     }
+    const isContentSensitive = await containsSensitiveContent();
+    if (isContentSensitive) {
+      toast.error(
+        "A sua publicação contém conteúdo sensivel, por favor, verifique o conteúdo e tente novamente."
+      );
+      return;
+    }
 
     try {
       const response = await fetch(`${API_URL}/posts`, {
@@ -84,9 +108,12 @@ const Forum = () => {
   };
 
   const handleDelete = async (postId, authorId) => {
-    if (!user || user._id !== authorId || user.rolePosition !== 0) {
-      toast.error("You can only delete your own posts.");
-      return;
+    if (user.rolePosition !== 0) {
+      if (!user || user._id !== authorId) {
+        toast.error("You can only delete your own posts.");
+
+        return;
+      }
     }
 
     const confirmDelete = window.confirm(
