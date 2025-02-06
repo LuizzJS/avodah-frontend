@@ -114,7 +114,7 @@ export const setNewPassword = async (password, email) => {
     };
   } catch (error) {
     console.error("Error setting new password:", error);
-    return { success: false, message: error.message };
+    return { success: false, message: error.message, error };
   }
 };
 

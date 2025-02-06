@@ -62,30 +62,29 @@ const Header = () => {
   const toggleMenu = () => setIsMenuShown((prev) => !prev);
 
   return (
-    <header>
-      <div className="flex justify-between items-center h-[15vh] w-full max-md:hidden p-3">
+    <header className="w-full">
+      <div className="flex justify-between items-center h-[15vh] w-full p-3 max-md:hidden">
         <a onClick={() => navigate("/")}>
           <img
             src={AvodahLogo}
             alt="Ministério Avodah"
-            className="h-60 cursor-pointer"
+            className="h-20 cursor-pointer"
           />
         </a>
-        <Button click={handleButtonClick} label={buttonText} icon={<User2 />} />
+        <Button click={handleButtonClick} label={buttonText} profile />
       </div>
 
-      <div className="hidden max-md:flex items-center justify-between absolute z-auto">
+      <div className="hidden max-md:flex items-center justify-between absolute z-20 w-full p-3">
         <Menu onClick={toggleMenu} className="cursor-pointer m-4" />
         {isMenuShown && (
-          <div className="absolute top-0 left-0 h-screen w-screen bg-blue-500 flex flex-col items-start p-4 overflow-hidden z-20">
-            <X onClick={toggleMenu} className="cursor-pointer mb-4" />
-            <div className="w-full bg-white rounded-xl shadow-lg p-4">
-              <Button
-                click={handleButtonClick}
-                label={buttonText}
-                icon={<User2 />}
-              />
-              <div className="flex flex-col justify-center items-start font-semibold max-md:text-sm">
+          <div className="absolute top-0 left-0 h-screen w-full bg-blue-500 flex flex-col items-start p-6 overflow-y-auto z-20">
+            <X
+              onClick={toggleMenu}
+              className="cursor-pointer mb-6 text-white"
+            />
+            <div className="w-full bg-white rounded-xl shadow-lg p-4 flex flex-col gap-4">
+              <Button click={handleButtonClick} label={buttonText} profile />
+              <div className="flex flex-col gap-4 font-semibold text-white">
                 <Link href="/" label="Início" />
                 <Link href="/versiculo" label="Versículo do dia" />
                 <Link href="/policy-privacy" label="Política de Privacidade" />

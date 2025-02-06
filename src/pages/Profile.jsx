@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import imageCompression from "browser-image-compression";
 import { useNavigate } from "react-router-dom";
 import {
@@ -100,7 +100,7 @@ const Profile = () => {
 
     try {
       const compressedFile = await imageCompression(file, {
-        maxSizeMB: 0.1,
+        maxSizeMB: 1,
         maxWidthOrHeight: 800,
         useWebWorker: true,
       });
@@ -123,8 +123,8 @@ const Profile = () => {
 
   if (isLoading || !member)
     return (
-      <div className="flex justify-center items-center h-[100%] w-[100%]">
-        Loading...
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
 
@@ -144,16 +144,20 @@ const Profile = () => {
     { icon: <IdCard />, label: "ID", value: member._id.slice(0, 9) + "******" },
   ];
 
+  const username = `${member.username
+    .charAt(0)
+    .toUpperCase()}${member.username.slice(1)}`;
+
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+    <section className="w-full h-full flex items-center justify-center bg-gray-100 p-6">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 space-y-6">
         <div className="text-center">
           <img
             src={picture}
             alt="Profile"
-            className="mx-auto h-24 w-24 rounded-full object-cover"
+            className="mx-auto h-24 w-24 rounded-full object-cover border border-indigo-600"
           />
-          <h2 className="mt-4 text-xl font-bold">{member.username}</h2>
+          <h2 className="mt-4 text-xl font-bold">{username}</h2>
           <p className="text-gray-600">{member.email}</p>
         </div>
 
@@ -170,7 +174,7 @@ const Profile = () => {
         </div>
 
         {member.rolePosition === 0 && (
-          <div className="space-y-4">
+          <div className="space-y-4 flex justify-center items-center flex-col">
             {["role", "password"].map((type) => (
               <div key={type}>
                 <Button

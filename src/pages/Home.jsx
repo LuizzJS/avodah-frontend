@@ -5,8 +5,17 @@ import * as Images from "../slider_images/export.images";
 const Home = () => {
   const [image, setImage] = useState("");
   const [shown, setShown] = useState(false);
-  const images = [];
-  const slider_images = [Images.aniversario, Images.batismo, Images.culto];
+
+  const slider_images = [
+    Images.aniversario,
+    Images.batismo,
+    Images.culto,
+    Images.another1,
+    Images.another2,
+    Images.another3,
+    Images.another4,
+    Images.another5,
+  ];
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleImageClick = (e) => {
