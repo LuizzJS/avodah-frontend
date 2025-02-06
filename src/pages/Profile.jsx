@@ -24,6 +24,17 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import DefaultPicture from "../assets/default_user.jpg";
 
+const cargos = {
+  0: "Desenvolvedor",
+  1: "Pastor Presidente",
+  2: "Pastor Vice-Presidente",
+  4: "Secretário/a",
+  4: "Líder de Departamento",
+  5: "Líder",
+  6: "Influenciador",
+  7: "Membro",
+};
+
 const Profile = () => {
   const [member, setMember] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -128,8 +139,12 @@ const Profile = () => {
       </div>
     );
 
+  const username = `${member.username
+    .charAt(0)
+    .toUpperCase()}${member.username.slice(1)}`;
+
   const userInfo = [
-    { icon: <User />, label: "Nome", value: member.username },
+    { icon: <User />, label: "Nome", value: username },
     { icon: <Mail />, label: "Email", value: member.email },
     {
       icon: <Clock />,
@@ -139,14 +154,10 @@ const Profile = () => {
     {
       icon: <Briefcase />,
       label: "Cargo",
-      value: `${member.role} (Posição ${member.rolePosition})`,
+      value: `${cargos[member.rolePosition]} (Posição: ${member.rolePosition})`,
     },
     { icon: <IdCard />, label: "ID", value: member._id.slice(0, 9) + "******" },
   ];
-
-  const username = `${member.username
-    .charAt(0)
-    .toUpperCase()}${member.username.slice(1)}`;
 
   return (
     <section className="w-full h-full flex items-center justify-center bg-gray-100 p-6">

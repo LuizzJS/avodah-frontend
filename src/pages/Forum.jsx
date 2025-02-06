@@ -3,7 +3,7 @@ import { API_URL, checkIfLoggedIn } from "../auth.js";
 import Input from "../components/Input.jsx";
 import Button from "../components/Button.jsx";
 import toast from "react-hot-toast";
-import { AlignLeft, Edit, Heading, MessageCircle } from "lucide-react";
+import { AlignLeft, Heading, MessageCircle } from "lucide-react";
 
 const Forum = () => {
   const [posts, setPosts] = useState([]);
@@ -13,6 +13,7 @@ const Forum = () => {
   const [content, setContent] = useState("");
   const [formError, setFormError] = useState("");
   const [user, setUser] = useState(null);
+  const [fullContent, setFullContent] = useState({});
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -63,10 +64,9 @@ const Forum = () => {
           title,
           content,
           author: user.username,
-          authorId: user.id,
+          authorId: user._id,
         }),
       });
-      console.log(response);
 
       if (response.ok) {
         const newPost = await response.json();
@@ -84,7 +84,7 @@ const Forum = () => {
   };
 
   const handleDelete = async (postId, authorId) => {
-    if (!user || user.id !== authorId) {
+    if (!user || user._id !== authorId || user.rolePosition !== 0) {
       toast.error("You can only delete your own posts.");
       return;
     }
@@ -96,11 +96,13 @@ const Forum = () => {
 
     try {
       const response = await fetch(`${API_URL}/posts/remove/${postId}`, {
-        method: "DELETE",
+        method: "POST",
       });
 
       if (response.ok) {
-        setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+        setPosts((prevPosts) =>
+          prevPosts.filter((post) => post.postId !== postId)
+        );
         toast.success("Post deleted successfully!");
       } else {
         const errorData = await response.json();
@@ -120,6 +122,13 @@ const Forum = () => {
       hour: "2-digit",
       minute: "2-digit",
     });
+
+  const toggleContent = (postId) => {
+    setFullContent((prevContent) => ({
+      ...prevContent,
+      [postId]: !prevContent[postId],
+    }));
+  };
 
   if (loading)
     return (
@@ -178,29 +187,47 @@ const Forum = () => {
         <ul className="space-y-6">
           {posts.map((post) => (
             <li
-              key={post.id}
+              key={post.postId}
               className="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition duration-300 hover:scale-105">
-              <div className="flex flex-col sm:flex-row justify-between items-start">
-                <div className="flex-1">
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-2 hover:underline">
-                    {post.title}
-                  </h3>
-                  <p className="text-gray-600 mb-2 break-words line-clamp-3">
-                    {post.content}
+              <div className="flex flex-col">
+                <div className="flex flex-col sm:flex-row justify-between items-start">
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-semibold text-gray-900 mb-2 hover:underline break-words">
+                      {post.title}
+                    </h3>
+                  </div>
+                  <div className="mt-4 sm:mt-0 text-right sm:text-left w-fit">
+                    <p className="text-gray-500 text-sm">
+                      Author: @{post.author}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-2">
+                  <p className="text-gray-700 break-words ">
+                    {post.content.length > 100 && !fullContent[post.postId]
+                      ? `${post.content.substring(0, 100)}...`
+                      : post.content}
                   </p>
-                  <p className="text-gray-500 text-xs">
+                  {post.content.length > 100 && (
+                    <button
+                      onClick={() => toggleContent(post.postId)}
+                      className="text-blue-500 text-sm mt-1 hover:underline">
+                      {fullContent[post.postId] ? "Show Less" : "Show More"}
+                    </button>
+                  )}
+                  <p className="text-gray-500 text-xs mt-2">
                     {formatDate(post.date)}
                   </p>
                 </div>
-                <div className="mt-4 sm:mt-0 text-right sm:text-left w-fit">
-                  <p className="text-gray-500 text-sm">
-                    Author: @{post.author}
-                  </p>
+                <div className="mt-4 flex justify-end">
                   {user &&
-                    (post.authorId === user.id || user.rolePosition > 1) && (
+                    (post.authorId === user._id || user.rolePosition === 0) && (
                       <button
-                        onClick={() => handleDelete(post.id, post.authorId)}
-                        className="text-red-500 text-sm mt-2 sm:mt-0 hover:underline">
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(post.postId, user._id);
+                        }}
+                        className="text-red-500 text-sm hover:underline">
                         Delete
                       </button>
                     )}

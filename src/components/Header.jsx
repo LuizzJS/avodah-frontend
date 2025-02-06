@@ -13,10 +13,11 @@ const cargos = {
   0: "Desenvolvedor",
   1: "Pastor Presidente",
   2: "Pastor Vice-Presidente",
-  3: "Secretário/a",
-  4: "Líder",
-  5: "Influenciador",
-  6: "Membro",
+  4: "Secretário/a",
+  4: "Líder de Departamento",
+  5: "Líder",
+  6: "Influenciador",
+  7: "Membro",
 };
 
 const Header = () => {
@@ -84,7 +85,7 @@ const Header = () => {
             />
             <div className="w-full bg-white rounded-xl shadow-lg p-4 flex flex-col gap-4">
               <Button click={handleButtonClick} label={buttonText} profile />
-              <div className="flex flex-col gap-4 font-semibold text-white">
+              <div className="flex flex-col gap-2 font-semibold text-white">
                 <Link href="/" label="Início" />
                 <Link href="/versiculo" label="Versículo do dia" />
                 <Link href="/policy-privacy" label="Política de Privacidade" />

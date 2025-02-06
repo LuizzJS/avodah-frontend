@@ -22,7 +22,6 @@ const App = () => {
               path="/policy-privacy"
               element={<Components.PolicyPrivacy />}
             />
-
             <Route
               path="/versiculo"
               element={
@@ -32,7 +31,6 @@ const App = () => {
               }
             />
             <Route path="/forum" element={<Components.Forum />} />
-
             <Route path="*" element={<Components.NotFound />} />
           </Routes>
         </main>

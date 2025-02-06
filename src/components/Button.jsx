@@ -23,8 +23,6 @@ const Button = ({
           const { ok, user } = await checkIfLoggedIn();
           if (ok && user) {
             setMember(user);
-          } else {
-            navigate("/login");
           }
         } catch {
           navigate("/login");
@@ -35,7 +33,7 @@ const Button = ({
 
       fetchUser();
     } else {
-      setIsLoading(false); // No need to load user if no profile is requested
+      setIsLoading(false);
     }
   }, [profile, navigate]);
 
