@@ -63,13 +63,13 @@ const Forum = () => {
     e.preventDefault();
 
     if (!title || !content) {
-      setFormError("Please fill in all fields.");
+      setFormError("Preencha todos os campos.");
       return;
     }
 
     setFormError("");
     if (!user) {
-      toast.error("You must be logged in to create a post.");
+      toast.error("Você deve entrar para criar uma publicação.");
       return;
     }
     const isContentSensitive = await containsSensitiveContent();

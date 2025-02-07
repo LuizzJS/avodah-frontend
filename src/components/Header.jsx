@@ -27,6 +27,34 @@ const Header = () => {
   const [buttonText, setButtonText] = useState("Carregando...");
   const navigate = useNavigate();
 
+  document.onload = () => {
+    const fetchUser = async () => {
+      try {
+        const data = await checkIfLoggedIn();
+        if (!data.ok || !data.user) {
+          setLogged(false);
+          setUser(null);
+          setButtonText("Entre ou cadastre-se");
+          return;
+        }
+        setUser(data.user);
+        setLogged(true);
+        setButtonText(
+          `${
+            data.user.username?.charAt(0).toUpperCase() +
+            data.user.username?.slice(1)
+          } | ${cargos[data.user?.rolePosition] || "Membro"}`
+        );
+      } catch {
+        setLogged(false);
+        setUser(null);
+        setButtonText("Entre ou cadastre-se");
+      }
+    };
+
+    fetchUser();
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
