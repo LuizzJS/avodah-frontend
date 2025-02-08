@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from "./Button";
 import Link from "./Link";
 import { Menu, X } from "lucide-react";
@@ -29,13 +29,11 @@ const Header = () => {
     const fetchUser = async () => {
       try {
         const { ok, user } = await checkIfLoggedIn();
-
         if (ok && user) {
           setMember(user);
           const username =
             String(user.username)[0].toUpperCase() +
             String(user.username).slice(1);
-
           setButtonText(`${username} | ${cargos[user.rolePosition]}`);
         }
       } catch (error) {
@@ -47,7 +45,10 @@ const Header = () => {
   }, []);
 
   const handleButtonClick = () => {
-    navigate(member === null ? "/login" : "/profile");
+    setMember((prevMember) => {
+      navigate(prevMember === null ? "/login" : "/profile");
+      return prevMember;
+    });
     setIsMenuShown(false);
   };
 
@@ -76,7 +77,7 @@ const Header = () => {
             />
             <div className="w-full bg-white rounded-xl shadow-lg p-4 flex flex-col gap-4">
               <Button click={handleButtonClick} label={buttonText} profile />
-              <div className="flex flex-col gap-2 font-semibold text-white">
+              <div className="flex flex-col font-medium text-white">
                 <Link href="/" label="Início" />
                 <Link href="/versiculo" label="Versículo do dia" />
                 <Link href="/policy-privacy" label="Política de Privacidade" />
