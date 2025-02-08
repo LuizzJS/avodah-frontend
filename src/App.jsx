@@ -6,6 +6,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <div className="h-screen w-screen flex flex-col m-0 p-0 overflow-x-hidden">
+        <Components.CookieBanner />
         <Components.Header />
 
         <main className="flex-grow">

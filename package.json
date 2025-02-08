@@ -18,6 +18,7 @@
     "check-password-strength": "latest",
     "dotenv": "latest",
     "email-validator": "latest",
+    "js-cookie": "^3.0.5",
     "lucide-react": "latest",
     "mailtrap": "latest",
     "react": "latest",

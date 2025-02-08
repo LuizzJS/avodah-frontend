@@ -1,62 +1,53 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Button from "./Button";
 import Link from "./Link";
-import { User2, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import AvodahLogo from "/avodah-transparent.png";
 import { checkIfLoggedIn } from "../auth";
 import axios from "axios";
 
 axios.defaults.withCredentials = true;
 
-const cargos = {
-  0: "Desenvolvedor",
-  1: "Pastor Presidente",
-  2: "Pastor Vice-Presidente",
-  4: "Secretário/a",
-  4: "Líder de Departamento",
-  5: "Líder",
-  6: "Influenciador",
-  7: "Membro",
-};
-
 const Header = () => {
+  const cargos = {
+    0: "Desenvolvedor",
+    1: "Pastor Presidente",
+    2: "Pastor Vice-Presidente",
+    3: "Secretário/a",
+    4: "Líder de Departamento",
+    5: "Líder",
+    6: "Influenciador",
+    7: "Membro",
+  };
+  const [member, setMember] = useState(null);
   const [isMenuShown, setIsMenuShown] = useState(false);
-  const [user, setUser] = useState(null);
-  const [logged, setLogged] = useState(false);
-  const [buttonText, setButtonText] = useState("Carregando...");
+  const [buttonText, setButtonText] = useState("Entre ou cadastre-se");
   const navigate = useNavigate();
 
-  const fetchUser = async () => {
-    try {
-      const data = await checkIfLoggedIn();
-      if (!data.ok || !data.user) {
-        setLogged(false);
-        setUser(null);
-        setButtonText("Entre ou cadastre-se");
-        return;
-      }
-      setUser(data.user);
-      setLogged(true);
-      setButtonText(
-        `${
-          data.user.username?.charAt(0).toUpperCase() +
-          data.user.username?.slice(1)
-        } | ${cargos[data.user?.rolePosition] || "Membro"}`
-      );
-    } catch {
-      setLogged(false);
-      setUser(null);
-      setButtonText("Entre ou cadastre-se");
-    }
-  };
-
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const { ok, user } = await checkIfLoggedIn();
+
+        if (ok && user) {
+          setMember(user);
+          const username =
+            String(user.username)[0].toUpperCase() +
+            String(user.username).slice(1);
+
+          setButtonText(`${username} | ${cargos[user.rolePosition]}`);
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
     fetchUser();
   }, []);
 
   const handleButtonClick = () => {
-    navigate(logged ? "/profile" : "/login");
+    navigate(member === null ? "/login" : "/profile");
     setIsMenuShown(false);
   };
 

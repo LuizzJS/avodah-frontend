@@ -2,6 +2,7 @@ import NetworkProtection from "./components/NetworkProtection.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PolicyPrivacy from "./pages/PolicyPrivacy.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
+import CookieBanner from "./components/CookieBanner.jsx";
 import ErrorReport from "./pages/ErrorReport.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import DayVerse from "./pages/DayVerse.jsx";
@@ -22,6 +23,7 @@ export {
   NetworkProtection,
   ProtectedRoute,
   PolicyPrivacy,
+  CookieBanner,
   RegisterPage,
   ErrorReport,
   LoginPage,
