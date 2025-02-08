@@ -20,7 +20,6 @@ const Header = () => {
     6: "Influenciador",
     7: "Membro",
   };
-
   const [member, setMember] = useState(null);
   const [isMenuShown, setIsMenuShown] = useState(false);
   const [buttonText, setButtonText] = useState("Entre ou cadastre-se");
@@ -38,7 +37,7 @@ const Header = () => {
           setButtonText(`${username} | ${cargos[user.rolePosition]}`);
         }
       } catch (error) {
-        console.error("Error fetching user:", error?.message);
+        console.error("Error fetching user:", error);
       }
     };
 
@@ -46,11 +45,10 @@ const Header = () => {
   }, []);
 
   const handleButtonClick = () => {
-    if (!member?.username) {
-      navigate("/login");
-    } else {
-      navigate("/profile");
-    }
+    setMember((prevMember) => {
+      navigate(prevMember === null ? "/login" : "/profile");
+      return prevMember;
+    });
     setIsMenuShown(false);
   };
 
@@ -58,7 +56,6 @@ const Header = () => {
 
   return (
     <header className="w-full">
-      {/* Desktop Navbar */}
       <div className="flex justify-between items-center h-[15vh] w-full p-3 max-md:hidden">
         <a onClick={() => navigate("/")}>
           <img
@@ -70,7 +67,6 @@ const Header = () => {
         <Button click={handleButtonClick} label={buttonText} profile />
       </div>
 
-      {/* Mobile Navbar */}
       <div className="hidden max-md:flex items-center justify-between absolute z-20 w-full p-3">
         <Menu onClick={toggleMenu} className="cursor-pointer m-4" />
         {isMenuShown && (

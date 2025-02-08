@@ -3,7 +3,6 @@ import { login } from "../auth";
 import { useNavigate } from "react-router-dom";
 import { Input, Link, Button } from "../export.js";
 import { User2, Lock, LogIn, Loader } from "lucide-react";
-import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const LoginPage = () => {
@@ -16,14 +15,11 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setIsLoading(true);
 
     try {
-      const { token, success } = await login(username.trim(), password.trim());
+      const response = await login(username.trim(), password.trim());
 
-      if (success && token) {
-        localStorage.setItem("token", token);
-        Cookies.set("token", token);
+      if (response.success) {
         toast.success("Logado com sucesso");
         setTimeout(() => {
           navigate("/");
@@ -35,12 +31,10 @@ const LoginPage = () => {
         toast.error(errorText);
       }
     } catch (error) {
-      console.error("Erro durante o login:", error);
+      console.error("Error during login:", error);
       const errorText = "Ocorreu um erro. Por favor, tente novamente.";
       setError(errorText);
       toast.error(errorText);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -71,9 +65,8 @@ const LoginPage = () => {
           <Button
             type="submit"
             click={handleSubmit}
-            label={isLoading ? "Entrando..." : "Login"}
+            label="Login"
             icon={isLoading ? <Loader className="animate-spin" /> : <LogIn />}
-            disabled={isLoading}
           />
         </form>
         <Link href="/register" label="Ainda não tem uma conta? Registre-se" />
