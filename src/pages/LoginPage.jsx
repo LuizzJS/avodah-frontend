@@ -3,6 +3,7 @@ import { login } from "../auth";
 import { useNavigate } from "react-router-dom";
 import { Input, Link, Button } from "../export.js";
 import { User2, Lock, LogIn, Loader } from "lucide-react";
+import * as Cookie from "js-cookie";
 import toast from "react-hot-toast";
 
 const LoginPage = () => {
@@ -18,10 +19,13 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await login(username.trim(), password.trim());
+      const { message, data, token, success } = await login(
+        username.trim(),
+        password.trim()
+      );
 
-      if (response.success && response.token) {
-        localStorage.setItem("token", response.token);
+      if (success && token) {
+        localStorage.setItem("token", token);
 
         toast.success("Logado com sucesso");
         setTimeout(() => {
