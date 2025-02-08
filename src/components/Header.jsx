@@ -4,7 +4,6 @@ import Button from "./Button";
 import Link from "./Link";
 import { Menu, X } from "lucide-react";
 import AvodahLogo from "/avodah-transparent.png";
-import { checkIfLoggedIn } from "../auth";
 import axios from "axios";
 
 axios.defaults.withCredentials = true;
@@ -28,13 +27,19 @@ const Header = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const { ok, user } = await checkIfLoggedIn();
-        if (ok && user) {
-          setMember(user);
-          const username =
-            String(user.username)[0].toUpperCase() +
-            String(user.username).slice(1);
-          setButtonText(`${username} | ${cargos[user.rolePosition]}`);
+        const token = localStorage.getItem("token");
+        if (token) {
+          const response = await axios.get("/api/auth/isLogged", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (response.data.success && response.data.data) {
+            const user = response.data.data;
+            setMember(user);
+            const username =
+              String(user.username)[0].toUpperCase() +
+              String(user.username).slice(1);
+            setButtonText(`${username} | ${cargos[user.rolePosition]}`);
+          }
         }
       } catch (error) {
         console.error("Error fetching user:", error);

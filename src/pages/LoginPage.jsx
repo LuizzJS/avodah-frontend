@@ -15,11 +15,14 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
     try {
       const response = await login(username.trim(), password.trim());
 
-      if (response.success) {
+      if (response.success && response.token) {
+        localStorage.setItem("token", response.token);
+
         toast.success("Logado com sucesso");
         setTimeout(() => {
           navigate("/");
@@ -31,10 +34,12 @@ const LoginPage = () => {
         toast.error(errorText);
       }
     } catch (error) {
-      console.error("Error during login:", error);
+      console.error("Erro durante o login:", error);
       const errorText = "Ocorreu um erro. Por favor, tente novamente.";
       setError(errorText);
       toast.error(errorText);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -65,8 +70,9 @@ const LoginPage = () => {
           <Button
             type="submit"
             click={handleSubmit}
-            label="Login"
+            label={isLoading ? "Entrando..." : "Login"}
             icon={isLoading ? <Loader className="animate-spin" /> : <LogIn />}
+            disabled={isLoading}
           />
         </form>
         <Link href="/register" label="Ainda não tem uma conta? Registre-se" />
