@@ -28,6 +28,8 @@ const Header = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        const response = await checkIfLoggedIn();
+        console.log(response);
         const { ok, user } = await checkIfLoggedIn();
         if (ok && user) {
           setMember(user);
