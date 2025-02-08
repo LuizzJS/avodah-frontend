@@ -63,7 +63,7 @@ export const checkIfLoggedIn = async () => {
       ? { ok: true, user: data.data, message: data.message }
       : { ok: false, user: null, message: "Usuário não autenticado." };
   } catch (error) {
-    console.error("Error checking login status:", error?.response?.data);
+    console.error("Erro ao verificar a autenticação:", error?.response?.data);
     return { ok: false, message: error.response.data.message };
   }
 };
