@@ -55,14 +55,16 @@ export const register = async (username, email, password) => {
 
 export const checkIfLoggedIn = async () => {
   try {
-    const { data } = await api.get("/isLogged");
+    const { data } = await api.get("/isLogged", {
+      authorization: `Bearer ${localStorage.getItem("token")}`,
+    });
 
     return data.success
-      ? { ok: true, user: data.data }
-      : { ok: false, user: null };
+      ? { ok: true, user: data.data, message: data.message }
+      : { ok: false, user: null, message: "Usuário não autenticado." };
   } catch (error) {
-    console.error("Error checking login status:", error);
-    return { ok: false };
+    console.error("Error checking login status:", error?.response?.data);
+    return { ok: false, message: error.response.data.message };
   }
 };
 

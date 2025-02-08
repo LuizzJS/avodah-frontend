@@ -4,6 +4,7 @@ import Button from "./Button";
 import Link from "./Link";
 import { Menu, X } from "lucide-react";
 import AvodahLogo from "/avodah-transparent.png";
+import { checkIfLoggedIn } from "../auth";
 import axios from "axios";
 
 axios.defaults.withCredentials = true;
@@ -19,6 +20,7 @@ const Header = () => {
     6: "Influenciador",
     7: "Membro",
   };
+
   const [member, setMember] = useState(null);
   const [isMenuShown, setIsMenuShown] = useState(false);
   const [buttonText, setButtonText] = useState("Entre ou cadastre-se");
@@ -27,22 +29,16 @@ const Header = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (token) {
-          const response = await axios.get("/api/auth/isLogged", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (response.data.success && response.data.data) {
-            const user = response.data.data;
-            setMember(user);
-            const username =
-              String(user.username)[0].toUpperCase() +
-              String(user.username).slice(1);
-            setButtonText(`${username} | ${cargos[user.rolePosition]}`);
-          }
+        const { ok, user, message } = await checkIfLoggedIn();
+        if (ok && user) {
+          setMember(user);
+          const username =
+            String(user.username)[0].toUpperCase() +
+            String(user.username).slice(1);
+          setButtonText(`${username} | ${cargos[user.rolePosition]}`);
         }
       } catch (error) {
-        console.error("Error fetching user:", error);
+        console.error("Error fetching user:", error?.message);
       }
     };
 
@@ -50,10 +46,11 @@ const Header = () => {
   }, []);
 
   const handleButtonClick = () => {
-    setMember((prevMember) => {
-      navigate(prevMember === null ? "/login" : "/profile");
-      return prevMember;
-    });
+    if (!member?.username) {
+      navigate("/login");
+    } else {
+      navigate("/profile");
+    }
     setIsMenuShown(false);
   };
 
@@ -61,6 +58,7 @@ const Header = () => {
 
   return (
     <header className="w-full">
+      {/* Desktop Navbar */}
       <div className="flex justify-between items-center h-[15vh] w-full p-3 max-md:hidden">
         <a onClick={() => navigate("/")}>
           <img
@@ -72,6 +70,7 @@ const Header = () => {
         <Button click={handleButtonClick} label={buttonText} profile />
       </div>
 
+      {/* Mobile Navbar */}
       <div className="hidden max-md:flex items-center justify-between absolute z-20 w-full p-3">
         <Menu onClick={toggleMenu} className="cursor-pointer m-4" />
         {isMenuShown && (
