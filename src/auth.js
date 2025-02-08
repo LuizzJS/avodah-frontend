@@ -5,7 +5,6 @@ export const API_URL = "https://backend-pjg0.onrender.com/api/auth";
 const api = axios.create({
   baseURL: API_URL,
   withCredentials: true,
-  headers: ["Authorization"],
 });
 
 export const login = async (username, password) => {
@@ -55,9 +54,7 @@ export const register = async (username, email, password) => {
 
 export const checkIfLoggedIn = async () => {
   try {
-    const { data } = await api.get("/isLogged", {
-      authorization: `Bearer ${localStorage.getItem("token")}`,
-    });
+    const { data } = await api.get("/isLogged");
 
     return data.success
       ? { ok: true, user: data.data, message: data.message }

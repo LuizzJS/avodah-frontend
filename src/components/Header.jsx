@@ -29,7 +29,7 @@ const Header = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const { ok, user, message } = await checkIfLoggedIn();
+        const { ok, user } = await checkIfLoggedIn();
         if (ok && user) {
           setMember(user);
           const username =

@@ -15,6 +15,7 @@ const Input = ({
       )}
       <input
         className="p-3 w-full border-none outline-none text-gray-800 focus:ring-0 placeholder:text-gray-400"
+        id={`input-${placeholder}`}
         placeholder={placeholder}
         onChange={onChange}
         {...props}
